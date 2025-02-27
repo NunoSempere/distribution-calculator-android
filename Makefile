@@ -80,3 +80,9 @@ emu-list:
 emu-start:
 	ANDROID_SDK_ROOT=/home/nuno/Android/Sdk emulator -avd Medium_Phone_API_35
 	# must be first installed from android studio
+	#
+
+edit:
+	vim app/src/main/java/com/example/distributioncalculator/MainActivity.kt
+
+
