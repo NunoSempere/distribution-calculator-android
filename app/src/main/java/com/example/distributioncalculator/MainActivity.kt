@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -162,7 +163,7 @@ fun Calculator(modifier: Modifier = Modifier) {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // First row - Clear and operations
+            // Output boxes with the same theme as inputs
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -170,7 +171,13 @@ fun Calculator(modifier: Modifier = Modifier) {
                 Box(
                     modifier = Modifier
                         .height(100.dp)
+                        .weight(1f)
                         .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline,
+                            shape = RoundedCornerShape(8.dp)
+                        )
                         .padding(16.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
@@ -185,7 +192,13 @@ fun Calculator(modifier: Modifier = Modifier) {
                 Box(
                     modifier = Modifier
                         .height(100.dp)
+                        .weight(1f)
                         .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline,
+                            shape = RoundedCornerShape(8.dp)
+                        )
                         .padding(16.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
@@ -349,10 +362,11 @@ fun Calculator(modifier: Modifier = Modifier) {
                         .weight(1f)
                         .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
                         .border(
-                            width = if (selected_input == 0) 3.dp else 0.dp,
-                            color = if (selected_input == 0) MaterialTheme.colorScheme.primary else Color.Transparent,
+                            width = if (selected_input == 0) 3.dp else 1.dp,
+                            color = if (selected_input == 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                             shape = RoundedCornerShape(8.dp)
                         )
+                        .clickable { selected_input = 0 }
                         .padding(16.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
@@ -370,10 +384,11 @@ fun Calculator(modifier: Modifier = Modifier) {
                         .weight(1f)
                         .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
                         .border(
-                            width = if (selected_input == 1) 3.dp else 0.dp,
-                            color = if (selected_input == 1) MaterialTheme.colorScheme.primary else Color.Transparent,
+                            width = if (selected_input == 1) 3.dp else 1.dp,
+                            color = if (selected_input == 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                             shape = RoundedCornerShape(8.dp)
                         )
+                        .clickable { selected_input = 1 }
                         .padding(16.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
@@ -386,15 +401,6 @@ fun Calculator(modifier: Modifier = Modifier) {
                     )
                 }
             }
-            
-            // Add a text label to indicate which input is selected
-            Text(
-                text = "Currently editing: Input ${selected_input + 1}",
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold
-            )
         }
     }
 }
