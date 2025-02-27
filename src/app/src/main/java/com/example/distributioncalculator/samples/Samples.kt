@@ -85,13 +85,13 @@ fun MultiplyDists(d1: Distribution, d2: Distribution): Distribution {
 // Division
 
 fun divideLogDists(l1: Distribution.Lognormal, l2: Distribution.Lognormal): Distribution.Lognormal {
-  var inverse = Distribution.Lognormal(low: 1.0 / l2.high, high: 1.0/l2.low)
+  var inverse = Distribution.Lognormal(low = 1.0 / l2.high, high = 1.0/l2.low)
 	return multiplyLogDists(l1, l2)
 	// TODO: case where divide by zero
 }
 
 
-fun DivideSamplesArray(xs: Distribution.SamplesArray, ys: Distribution.SamplesArray): Distribution.SamplesArray {
+fun divideSamplesArray(xs: Distribution.SamplesArray, ys: Distribution.SamplesArray): Distribution.SamplesArray {
   val zs = DoubleArray(xs.samples.size)
 
   for (i in xs.samples.indices) {
@@ -110,4 +110,43 @@ fun DivideDists(d1: Distribution, d2: Distribution): Distribution {
   }
 }
 
+// Addition
+fun sumSamplesArray(xs: Distribution.SamplesArray, ys: Distribution.SamplesArray): Distribution.SamplesArray {
+  val zs = DoubleArray(xs.samples.size)
 
+  for (i in xs.samples.indices) {
+      zs[i] = xs.samples[i] + ys.samples[i]
+  }
+  return Distribution.SamplesArray(zs)
+}
+
+fun SumDists(d1: Distribution, d2: Distribution): Distribution {
+  return when {
+    d1 is Distribution.Lognormal && d2 is Distribution.Lognormal -> sumSamplesArray(lognormalToSamples(d1), lognormalToSamples(d2))
+    d1 is Distribution.Lognormal && d2 is Distribution.SamplesArray -> sumSamplesArray(lognormalToSamples(d1), d2)
+    d1 is Distribution.SamplesArray && d2 is Distribution.Lognormal -> sumSamplesArray(d1, lognormalToSamples(d2))
+    d1 is Distribution.SamplesArray && d2 is Distribution.SamplesArray -> sumSamplesArray(d1, d2)
+    else -> throw IllegalArgumentException("Unsupported distribution types") // TODO: how to catch this? 
+  }
+}
+
+
+// Substraction
+fun substractSamplesArray(xs: Distribution.SamplesArray, ys: Distribution.SamplesArray): Distribution.SamplesArray {
+  val zs = DoubleArray(xs.samples.size)
+
+  for (i in xs.samples.indices) {
+      zs[i] = xs.samples[i] - ys.samples[i]
+  }
+  return Distribution.SamplesArray(zs)
+}
+
+fun SubstractDists(d1: Distribution, d2: Distribution): Distribution {
+  return when {
+    d1 is Distribution.Lognormal && d2 is Distribution.Lognormal -> substractSamplesArray(lognormalToSamples(d1), lognormalToSamples(d2))
+    d1 is Distribution.Lognormal && d2 is Distribution.SamplesArray -> substractSamplesArray(lognormalToSamples(d1), d2)
+    d1 is Distribution.SamplesArray && d2 is Distribution.Lognormal -> substractSamplesArray(d1, lognormalToSamples(d2))
+    d1 is Distribution.SamplesArray && d2 is Distribution.SamplesArray -> substractSamplesArray(d1, d2)
+    else -> throw IllegalArgumentException("Unsupported distribution types") // TODO: how to catch this? 
+  }
+}
