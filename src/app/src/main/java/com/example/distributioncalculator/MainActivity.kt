@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
 fun Calculator(modifier: Modifier = Modifier) {
  
     var output by remember { mutableStateOf(
-        samples.Distribution.Lognormal(low = 1.0, high = 1.0 )
+        Distribution.Lognormal(low = 1.0, high = 1.0)
     )}
     var output1 by remember { mutableStateOf(1.0) }
     var output2 by remember { mutableStateOf(1.0) }
@@ -88,14 +88,13 @@ fun Calculator(modifier: Modifier = Modifier) {
             "+" -> Pair(output1 + input1, output2 + input2)
             "-" -> Pair(output1 - input1, output2 - input2)
             "×" -> {
-                var linput = Samples.Distribution.Lognormal(low = input1, high = input2)
-                var loutput = Samples.Distribution.Lognormal(low = input1, high = input2)
-                var result = Samples.MultiplyDists(linput, loutput)
+                val linput = Distribution.Lognormal(low = input1, high = input2)
+                val loutput = Distribution.Lognormal(low = output1, high = output2)
+                val result = MultiplyDists(linput, loutput)
                 when(result) {
                     is Distribution.Lognormal -> Pair(result.low, result.high)
                     else -> Pair(output1, output2)
                 }
-                // Pair(output1 * input1, output2 * input2)
             }
             "÷" -> {
                 if (input2 == 0.0 || input1 == 0.0){
