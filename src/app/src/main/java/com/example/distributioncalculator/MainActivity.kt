@@ -93,7 +93,7 @@ fun Calculator(modifier: Modifier = Modifier) {
     val screenHeight = configuration.screenHeightDp
     
     val basePadding = (min(screenWidth, screenHeight) * 0.04f).dp
-    val baseSpacing = (min(screenWidth, screenHeight) * 0.04f).dp
+    val baseSpacing = (min(screenWidth, screenHeight) * 0.02f).dp // Reduced spacing between buttons
     
     val largeFontSize = max(min(screenWidth, screenHeight) * 0.06f, 20f).sp
     val buttonFontSize = max(min(screenWidth, screenHeight) * 0.06f, 18f).sp
@@ -605,7 +605,7 @@ fun ResponsiveCalculatorButton(
     
     Button(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier.fillMaxHeight(),
         shape = RectangleShape,
         colors = ButtonDefaults.buttonColors(
             containerColor = buttonColor
