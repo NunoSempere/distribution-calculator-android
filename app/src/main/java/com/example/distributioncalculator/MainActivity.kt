@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -30,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -242,11 +244,11 @@ fun Calculator(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .height(100.dp)
                         .weight(1f)
-                        .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
                         .border(
                             width = 1.dp,
                             color = MaterialTheme.colorScheme.outline,
-                            shape = RoundedCornerShape(8.dp)
+                            shape = RectangleShape
                         )
                         .padding(16.dp),
                     contentAlignment = Alignment.CenterEnd
@@ -263,11 +265,11 @@ fun Calculator(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .height(100.dp)
                         .weight(1f)
-                        .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
                         .border(
                             width = 1.dp,
                             color = MaterialTheme.colorScheme.outline,
-                            shape = RoundedCornerShape(8.dp)
+                            shape = RectangleShape
                         )
                         .padding(16.dp),
                     contentAlignment = Alignment.CenterEnd
@@ -471,11 +473,11 @@ fun Calculator(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .height(100.dp)
                         .weight(1f)
-                        .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
                         .border(
                             width = if (selected_input == 0) 3.dp else 1.dp,
                             color = if (selected_input == 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
-                            shape = RoundedCornerShape(8.dp)
+                            shape = RectangleShape
                         )
                         .clickable { selected_input = 0 }
                         .padding(16.dp),
@@ -493,11 +495,11 @@ fun Calculator(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .height(100.dp)
                         .weight(1f)
-                        .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
                         .border(
                             width = if (selected_input == 1) 3.dp else 1.dp,
                             color = if (selected_input == 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
-                            shape = RoundedCornerShape(8.dp)
+                            shape = RectangleShape
                         )
                         .clickable { selected_input = 1 }
                         .padding(16.dp),
@@ -525,7 +527,8 @@ fun CalculatorButton(
     Button(
         onClick = onClick,
         modifier = modifier
-            .height(64.dp)
+            .height(64.dp),
+        shape = RectangleShape
     ) {
         Text(
             text = text,

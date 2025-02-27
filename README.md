@@ -7,3 +7,4 @@ Steps when using it:
 - Make X more prominent
 - Clear on double tap?
 - Add separators
+- Big x and = buttons 
