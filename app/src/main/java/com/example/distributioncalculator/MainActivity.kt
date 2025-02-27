@@ -37,8 +37,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.distributioncalculator.ui.theme.CommandColor
 import com.example.distributioncalculator.ui.theme.DistributionCalculatorTheme
+import com.example.distributioncalculator.ui.theme.EqualColor
+import com.example.distributioncalculator.ui.theme.NumberColor
+import com.example.distributioncalculator.ui.theme.OperationColor
+import com.example.distributioncalculator.ui.theme.UnitColor
 import kotlin.math.abs
+import kotlin.math.pow
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,9 +66,10 @@ fun Calculator(modifier: Modifier = Modifier) {
     var output2 by remember { mutableStateOf(1.0) }
     var input1 by remember { mutableStateOf(0.0) }
     var input2 by remember { mutableStateOf(0.0) }
-    var selected_input by remember { mutableStateOf(0) }
     var operation by remember { mutableStateOf("×") }
-    var clearOnNextDigit by remember { mutableStateOf(false) }
+    var selected_input by remember { mutableStateOf(0) }
+    var on_decimal_input by remember {mutableStateOf(0)}
+    var on_decimal_level by remember {mutableStateOf(-1)}
 
     fun calculateResult(): Pair<Double, Double> {
         // Fake operation from now.
@@ -114,56 +121,53 @@ fun Calculator(modifier: Modifier = Modifier) {
         }
     }
 
-
     fun onNumberClick(number: Int) {
-        if (selected_input == 0) {
-            input1 = input1 * 10 + number
+        if (on_decimal_input == 0) {
+            if (selected_input == 0) {
+                input1 = input1 * 10 + number
+            } else {
+                input2 = input2 * 10 + number
+            }
         } else {
-            input2 = input2 * 10 + number
+            if (selected_input == 0) {
+                input1 = input1 + number * 10.0.pow(on_decimal_level)
+            } else {
+                input2 = input2 + number * 10.0.pow(on_decimal_level)
+            }
+            on_decimal_level = on_decimal_level - 1
         }
-        /*
-        input = if (input == 0 || clearOnNextDigit) {
-            clearOnNextDigit = false
-            // number.toString()
-            number
-        } else {
-            10 * input + number
-            // input + number.toString()
-        }
-        */
     }
 
     fun onOperationClick(op: String) {
         operation = op
-        // input1 = 0.0
-        // input2 = 0.0
-        // clearOnNextDigit = true
+        on_decimal_input = 0
+        on_decimal_level = -1
     }
 
     fun onMultiplierClick(multiplier: String) {
-			  if (selected_input == 0) {
-					input1 = when (multiplier) {
-							"%" -> input1 * 0.01
-							"K" -> input1 * 1000.0
-							"M" -> input1 * 1000.0 * 1000.0
-							"B" -> input1 * 1000.0 * 1000.0 * 1000.0
-							"T" -> input1 * 1000.0 * 1000.0 * 1000.0 * 1000.0
-							else -> input1
-					}
-					 
-				} else {
-					input2 = when (multiplier) {
-							"%" -> input2 * 0.01
-							"K" -> input2 * 1000.0
-							"M" -> input2 * 1000.0 * 1000.0
-							"B" -> input2 * 1000.0 * 1000.0 * 1000.0
-							"T" -> input2 * 1000.0 * 1000.0 * 1000.0 * 1000.0
-							else ->  input2
-					}
-				}
-
+        if (selected_input == 0) {
+            input1 = when (multiplier) {
+                "%" -> input1 * 0.01
+                "K" -> input1 * 1000.0
+                "M" -> input1 * 1000.0 * 1000.0
+                "B" -> input1 * 1000.0 * 1000.0 * 1000.0
+                "T" -> input1 * 1000.0 * 1000.0 * 1000.0 * 1000.0
+                else -> input1
+            }
+            selected_input = 1
+        } else {
+            input2 = when (multiplier) {
+                "%" -> input2 * 0.01
+                "K" -> input2 * 1000.0
+                "M" -> input2 * 1000.0 * 1000.0
+                "B" -> input2 * 1000.0 * 1000.0 * 1000.0
+                "T" -> input2 * 1000.0 * 1000.0 * 1000.0 * 1000.0
+                else -> input2
+            }
+        }
+        on_decimal_input = 0
+        on_decimal_level = -1
     }
-
 
     fun onEqualsClick() {
         val result = calculateResult()
@@ -174,47 +178,33 @@ fun Calculator(modifier: Modifier = Modifier) {
         input2 = 0.0
         operation = "×" 
         selected_input = 0
+        on_decimal_input = 0
+        on_decimal_level = -1
     }
 
     fun onRestartClick() {
         output1 = 1.0
         output2 = 1.0
+
         input1 = 0.0
         input2 = 0.0
         operation = "×" 
-        clearOnNextDigit = false
+        selected_input = 0
+        on_decimal_input = 0
+        on_decimal_level = -1
     }
     fun onClearClick() {
-			  if (selected_input == 0) {
-					input1 = 0.0
-				} else {
-					input2 = 0.0
-				}
-        clearOnNextDigit = false
+        if (selected_input == 0) {
+            input1 = 0.0
+        } else {
+            input2 = 0.0
+        }
+        on_decimal_input = 0
+        on_decimal_level = -1
     }
 
     fun onDecimalClick() {
-        // TO DO: fix later
-        /*
-        if (clearOnNextDigit) {
-            input = "0."
-            clearOnNextDigit = false
-        } else if (!input.contains(".")) {
-            input = "$input."
-        }
-        */
-    }
-    fun onSwitchClick() {
-        selected_input = (selected_input + 1) % 2
-        // TO DO: fix later
-        /*
-        if (clearOnNextDigit) {
-            input = "0."
-            clearOnNextDigit = false
-        } else if (!input.contains(".")) {
-            input = "$input."
-        }
-        */
+        on_decimal_input = 1
     }
 
     Column(
@@ -228,7 +218,7 @@ fun Calculator(modifier: Modifier = Modifier) {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Output boxes with the same theme as inputs
+            // Output boxes with different style from inputs
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -237,12 +227,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .height(100.dp)
                         .weight(1f)
-                        .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.outline,
-                            shape = RectangleShape
-                        )
+                        .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
                         .padding(16.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
@@ -251,6 +236,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.End,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         maxLines = 1
                     )
                 }
@@ -258,12 +244,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .height(100.dp)
                         .weight(1f)
-                        .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.outline,
-                            shape = RectangleShape
-                        )
+                        .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
                         .padding(16.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
@@ -272,6 +253,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.End,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         maxLines = 1
                     )
                 }
@@ -293,7 +275,8 @@ fun Calculator(modifier: Modifier = Modifier) {
                 CalculatorButton(
                     text = "×",
                     onClick = { onOperationClick("×") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    buttonType = ButtonType.OPERATION
                 )
             }
 
@@ -305,17 +288,20 @@ fun Calculator(modifier: Modifier = Modifier) {
                 CalculatorButton(
                     text = "+",
                     onClick = { onOperationClick("+") },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.OPERATION
                 )
                 CalculatorButton(
                     text = "÷",
                     onClick = { onOperationClick("÷") },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.OPERATION
                 )
                 CalculatorButton(
                     text = "-",
                     onClick = { onOperationClick("-") },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.OPERATION
                 )
             }
 
@@ -327,17 +313,20 @@ fun Calculator(modifier: Modifier = Modifier) {
                 CalculatorButton(
                     text = "1",
                     onClick = { onNumberClick(1) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.NUMBER
                 )
                 CalculatorButton(
                     text = "2",
                     onClick = { onNumberClick(2) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.NUMBER
                 )
                 CalculatorButton(
                     text = "3",
                     onClick = { onNumberClick(3) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.NUMBER
                 )
             }
 
@@ -349,17 +338,20 @@ fun Calculator(modifier: Modifier = Modifier) {
                 CalculatorButton(
                     text = "4",
                     onClick = { onNumberClick(4) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.NUMBER
                 )
                 CalculatorButton(
                     text = "5",
                     onClick = { onNumberClick(5) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.NUMBER
                 )
                 CalculatorButton(
                     text = "6",
                     onClick = { onNumberClick(6) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.NUMBER
                 )
             }
             
@@ -371,17 +363,20 @@ fun Calculator(modifier: Modifier = Modifier) {
                 CalculatorButton(
                     text = "7",
                     onClick = { onNumberClick(7) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.NUMBER
                 )
                 CalculatorButton(
                     text = "8",
                     onClick = { onNumberClick(8) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.NUMBER
                 )
                 CalculatorButton(
                     text = "9",
                     onClick = { onNumberClick(9) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.NUMBER
                 )
             }
 
@@ -393,44 +388,20 @@ fun Calculator(modifier: Modifier = Modifier) {
                 CalculatorButton(
                     text = "Restart",
                     onClick = { onRestartClick() },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.COMMAND
                 )
                 CalculatorButton(
                     text = "0",
                     onClick = { onNumberClick(0) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.NUMBER
                 )
                 CalculatorButton(
                     text = ".",
                     onClick = { onDecimalClick() },
-                    modifier = Modifier.weight(1f)
-                )
-            }
-
-			// Multiplier row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                CalculatorButton(
-                    text = "K",
-                    onClick = { onMultiplierClick("K") },
-                    modifier = Modifier.weight(1f)
-                )
-                CalculatorButton(
-                    text = "M",
-                    onClick = { onMultiplierClick("M") },
-                    modifier = Modifier.weight(1f)
-                )
-                CalculatorButton(
-                    text = "B",
-                    onClick = { onMultiplierClick("B") },
-                    modifier = Modifier.weight(1f)
-                )
-                CalculatorButton(
-                    text = "T",
-                    onClick = { onMultiplierClick("T") },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.NUMBER
                 )
             }
 
@@ -442,14 +413,48 @@ fun Calculator(modifier: Modifier = Modifier) {
                 CalculatorButton(
                     text = "Clear",
                     onClick = { onClearClick() },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.COMMAND
                 )
                 CalculatorButton(
                     text = "%",
                     onClick = { onMultiplierClick("%") },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.UNIT
                 )
             }
+
+			// Multiplier row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                CalculatorButton(
+                    text = "K",
+                    onClick = { onMultiplierClick("K") },
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.UNIT
+                )
+                CalculatorButton(
+                    text = "M",
+                    onClick = { onMultiplierClick("M") },
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.UNIT
+                )
+                CalculatorButton(
+                    text = "B",
+                    onClick = { onMultiplierClick("B") },
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.UNIT
+                )
+                CalculatorButton(
+                    text = "T",
+                    onClick = { onMultiplierClick("T") },
+                    modifier = Modifier.weight(1f),
+                    buttonType = ButtonType.UNIT
+                )
+            }
+
             
             // Last row - Equals operator alone
             Row(
@@ -459,7 +464,8 @@ fun Calculator(modifier: Modifier = Modifier) {
                 CalculatorButton(
                     text = "=",
                     onClick = { onEqualsClick() },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    buttonType = ButtonType.EQUAL
                 )
             }
         }
@@ -483,7 +489,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                             color = if (selected_input == 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                             shape = RectangleShape
                         )
-                        .clickable { selected_input = 0 }
+                        .clickable { selected_input = 0; on_decimal_input = 0; on_decimal_level = -1 }
                         .padding(16.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
@@ -505,7 +511,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                             color = if (selected_input == 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                             shape = RectangleShape
                         )
-                        .clickable { selected_input = 1 }
+                        .clickable { selected_input = 1; on_decimal_input = 0; on_decimal_level = -1 }
                         .padding(16.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
@@ -522,17 +528,39 @@ fun Calculator(modifier: Modifier = Modifier) {
     }
 }
 
+// Enum to categorize button types
+enum class ButtonType {
+    OPERATION,
+    NUMBER,
+    UNIT,
+    COMMAND,
+    EQUAL
+}
+
 @Composable
 fun CalculatorButton(
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    buttonType: ButtonType = ButtonType.NUMBER
 ) {
+    // Choose color based on button type
+    val buttonColor = when (buttonType) {
+        ButtonType.OPERATION -> OperationColor
+        ButtonType.NUMBER -> NumberColor
+        ButtonType.UNIT -> UnitColor
+        ButtonType.COMMAND -> CommandColor
+        ButtonType.EQUAL -> EqualColor
+    }
+    
     Button(
         onClick = onClick,
         modifier = modifier
             .height(64.dp),
-        shape = RectangleShape
+        shape = RectangleShape,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = buttonColor
+        )
     ) {
         Text(
             text = text,
