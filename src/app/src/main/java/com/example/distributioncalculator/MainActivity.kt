@@ -71,52 +71,29 @@ fun Calculator(modifier: Modifier = Modifier) {
     var output by remember { mutableStateOf<Distribution>(
         Distribution.Lognormal(low = 1.0, high = 1.0)
     )}
+    var output_tag_low by remember { mutableStateOf(1.0) }
+    var output_tag_high by remember { mutableStateOf(1.0) }
 
-    var output1 by remember { mutableStateOf(1.0) }
-    var output2 by remember { mutableStateOf(1.0) }
-    var input1 by remember { mutableStateOf(0.0) }
-    var input2 by remember { mutableStateOf(0.0) }
+    var input_field_low by remember { mutableStateOf(0.0) }
+    var input_field_high by remember { mutableStateOf(0.0) }
+
     var operation by remember { mutableStateOf("×") }
     var selected_input by remember { mutableStateOf(0) }
     var on_decimal_input by remember {mutableStateOf(0)}
     var on_decimal_level by remember {mutableStateOf(-1)}
 
-
     /* Algebra */
-    fun calculateResult(): Pair<Double, Double> {
+    fun calculateResult(): Distribution {
         // Fake operation from now.
-        val linput = Distribution.Lognormal(low = input1, high = input2)
-        return when (operation) {
-            "×" -> {
-                val result = MultiplyDists(linput, loutput)
-                when(result) {
-                    is Distribution.Lognormal -> {
-                        return Pair(result.low, result.high)
-                        // return result
-                    }
-                    is SamplesArray -> {
-                        val result_copy = result.CopyOf(result.samples)
-                        result_copy.sort()
-                        val result_copy_low = result_copy[5_000]
-                        val result_copy_high = result_copy[95_000]
-                        Pair(result_copy_low, result_copy_high)
-                        // return result
-                    }
-                }
-            }
-            "÷" -> {
-                if (input2 == 0.0 || input1 == 0.0){
-                    throw IllegalArgumentException("Can't divide by zero")
-                    Pair(output1, output2)
-                    // TODO: "Error"
-                } else {
-                    Pair(output1 / input1, output2 / input2)
-                }
-            }
-            "+" -> Pair(output1 + input1, output2 + input2)
-            "-" -> Pair(output1 - input1, output2 - input2)
-            else -> Pair(output1, output2)
+        val input = Distribution.Lognormal(low = input_field_low, high = input_field_high)
+        val result = when (operation) {
+            "×" -> MultiplyDists(input, output) 
+            "÷" -> DivideDists(input, output)
+            "+" -> SumDists(input, output)
+            "-" -> SubstractDists(input, output)
+            else -> throw IllegalStateException("Unsupported operation type")
         }
+        return result
     }
 
     fun toPrettyString(d: Double): String {
@@ -154,15 +131,15 @@ fun Calculator(modifier: Modifier = Modifier) {
     fun onNumberClick(number: Int) {
         if (on_decimal_input == 0) {
             if (selected_input == 0) {
-                input1 = input1 * 10 + number
+                input_field_low = input_field_low * 10 + number
             } else {
-                input2 = input2 * 10 + number
+                input_field_high = input_field_high * 10 + number
             }
         } else {
             if (selected_input == 0) {
-                input1 = input1 + number * 10.0.pow(on_decimal_level)
+                input_field_low = input_field_low + number * 10.0.pow(on_decimal_level)
             } else {
-                input2 = input2 + number * 10.0.pow(on_decimal_level)
+                input_field_high = input_field_high + number * 10.0.pow(on_decimal_level)
             }
             on_decimal_level = on_decimal_level - 1
         }
@@ -176,23 +153,23 @@ fun Calculator(modifier: Modifier = Modifier) {
 
     fun onMultiplierClick(multiplier: String) {
         if (selected_input == 0) {
-            input1 = when (multiplier) {
-                "%" -> input1 * 0.01
-                "K" -> input1 * 1000.0
-                "M" -> input1 * 1000.0 * 1000.0
-                "B" -> input1 * 1000.0 * 1000.0 * 1000.0
-                "T" -> input1 * 1000.0 * 1000.0 * 1000.0 * 1000.0
-                else -> input1
+            input_field_low = when (multiplier) {
+                "%" -> input_field_low * 0.01
+                "K" -> input_field_low * 1000.0
+                "M" -> input_field_low * 1000.0 * 1000.0
+                "B" -> input_field_low * 1000.0 * 1000.0 * 1000.0
+                "T" -> input_field_low * 1000.0 * 1000.0 * 1000.0 * 1000.0
+                else -> input_field_low
             }
             selected_input = 1
         } else {
-            input2 = when (multiplier) {
-                "%" -> input2 * 0.01
-                "K" -> input2 * 1000.0
-                "M" -> input2 * 1000.0 * 1000.0
-                "B" -> input2 * 1000.0 * 1000.0 * 1000.0
-                "T" -> input2 * 1000.0 * 1000.0 * 1000.0 * 1000.0
-                else -> input2
+            input_field_high = when (multiplier) {
+                "%" -> input_field_high * 0.01
+                "K" -> input_field_high * 1000.0
+                "M" -> input_field_high * 1000.0 * 1000.0
+                "B" -> input_field_high * 1000.0 * 1000.0 * 1000.0
+                "T" -> input_field_high * 1000.0 * 1000.0 * 1000.0 * 1000.0
+                else -> input_field_high
             }
         }
         on_decimal_input = 0
@@ -201,11 +178,22 @@ fun Calculator(modifier: Modifier = Modifier) {
 
     fun onEqualsClick() {
         val result = calculateResult()
-        output1 = result.first
-        output2 = result.second
+        when(result) {
+            is Distribution.Lognormal -> {
+                output_tag_low = result.low
+                output_tag_high = result.high
+            }
+            is Distribution.SamplesArray -> {
+                val result_copy = (result.samples).copyOf()
+                result_copy.sort()
+                output_tag_low = result_copy[5_000]
+                output_tag_high = result_copy[95_000]
+            }
+        }
+        output = result
 
-        input1 = 0.0
-        input2 = 0.0
+        input_field_low = 0.0
+        input_field_high = 0.0
         operation = "×" 
         selected_input = 0
         on_decimal_input = 0
@@ -213,21 +201,23 @@ fun Calculator(modifier: Modifier = Modifier) {
     }
 
     fun onRestartClick() {
-        output1 = 1.0
-        output2 = 1.0
+        output = Distribution.Lognormal(low = 1.0, high = 1.0)
+        output_tag_low = 1.0
+        output_tag_high = 1.0
 
-        input1 = 0.0
-        input2 = 0.0
+        input_field_low = 0.0
+        input_field_high = 0.0
         operation = "×" 
         selected_input = 0
         on_decimal_input = 0
         on_decimal_level = -1
     }
+
     fun onClearClick() {
         if (selected_input == 0) {
-            input1 = 0.0
+            input_field_low = 0.0
         } else {
-            input2 = 0.0
+            input_field_high = 0.0
         }
         on_decimal_input = 0
         on_decimal_level = -1
@@ -262,7 +252,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Text(
-                        text = toPrettyString(output1),
+                        text = toPrettyString(output_tag_low),
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.End,
@@ -279,7 +269,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Text(
-                        text = toPrettyString(output2),
+                        text = toPrettyString(output_tag_high),
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.End,
@@ -524,7 +514,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Text(
-                        text = toPrettyString(input1),
+                        text = toPrettyString(input_field_low),
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.End,
@@ -546,7 +536,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Text(
-                        text = toPrettyString(input2),
+                        text = toPrettyString(input_field_high),
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.End,
