@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.distributioncalculator.ui.theme.DistributionCalculatorTheme
+import kotlin.math.abs
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +68,7 @@ fun Calculator(modifier: Modifier = Modifier) {
         return when (operation) {
             "+" -> Pair(output1 + input1, output2 + input2)
             "-" -> Pair(output1 - input1, output2 - input2)
-            "x" -> Pair(output1 * input1, output2 * input2)
+            "×" -> Pair(output1 * input1, output2 * input2)
             "÷" -> {
                 if (input2 == 0.0 || input1 == 0.0){
                     Pair(output1, output2)
@@ -79,6 +80,39 @@ fun Calculator(modifier: Modifier = Modifier) {
             else -> Pair(output1, output2)
         }
     }
+
+    fun toPrettyString(d: Double): String {
+        return when {
+            abs(d) >= 1_000_000_000_000.0 -> {
+                "%.2fT".format(d / 1_000_000_000_000.0)
+            }
+            abs(d) >= 1_000_000_000.0 -> {
+                "%.2fB".format(d / 1_000_000_000.0)
+            }
+            abs(d) >= 1_000_000.0 -> {
+                "%.2fM".format(d / 1_000_000.0)
+            }
+            abs(d) >= 1_000.0 -> {
+                "%.2fK".format(d / 1_000.0)
+            }
+            abs(d) <= 0.0001 -> {
+                d.toString()
+            }
+            abs(d) <= 0.001 -> {
+                "%.5f".format(d)
+            }
+            abs(d) <= 0.01 -> {
+                "%.4f".format(d)
+            }
+            abs(d) <= 0.1 -> {
+                "%.3f".format(d)
+            }
+            else -> {
+                "%.2f".format(d)
+            }
+        }
+    }
+
 
     fun onNumberClick(number: Int) {
         if (selected_input == 0) {
@@ -100,19 +134,20 @@ fun Calculator(modifier: Modifier = Modifier) {
 
     fun onOperationClick(op: String) {
         if (operation != null && !clearOnNextDigit) {
-            val result = calculateResult()
-            output1 = result.first
-            output2 = result.second
+            // val result = calculateResult()
+            // output1 = result.first
+            // output2 = result.second
+            operation = op
         }
         operation = op
-        input1 = 0.0
-        input2 = 0.0
-        clearOnNextDigit = true
+        // input1 = 0.0
+        // input2 = 0.0
+        // clearOnNextDigit = true
     }
 
     fun onMultiplierClick(multiplier: String) {
 			  if (selected_input == 0) {
-					val input1 = when (multiplier) {
+					input1 = when (multiplier) {
 							"K" -> input1 * 1000.0
 							"M" -> input1 * 1000.0 * 1000.0
 							"B" -> input1 * 1000.0 * 1000.0 * 1000.0
@@ -121,7 +156,7 @@ fun Calculator(modifier: Modifier = Modifier) {
 					}
 					 
 				} else {
-					val input2 = when (multiplier) {
+					input2 = when (multiplier) {
 							"K" -> input2 * 1000.0
 							"M" -> input2 * 1000.0 * 1000.0
 							"B" -> input2 * 1000.0 * 1000.0 * 1000.0
@@ -139,6 +174,8 @@ fun Calculator(modifier: Modifier = Modifier) {
             output1 = result.first
             output2 = result.second
             operation = null
+            input1 = 0.0
+            input2 = 0.0
         }
     }
 
@@ -213,7 +250,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Text(
-                        text = output1.toString(),
+                        text = toPrettyString(output1),
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.End,
@@ -234,7 +271,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Text(
-                        text = output2.toString(),
+                        text = toPrettyString(output2),
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.End,
@@ -355,7 +392,6 @@ fun Calculator(modifier: Modifier = Modifier) {
                     onClick = { onEqualsClick() },
                     modifier = Modifier.weight(1f)
                 )
-                Spacer(modifier = Modifier.weight(1f))
             }
 
 						// Multiplier click
@@ -437,7 +473,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Text(
-                        text = input1.toString(),
+                        text = toPrettyString(input1),
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.End,
@@ -459,7 +495,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Text(
-                        text = input2.toString(),
+                        text = toPrettyString(input2),
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.End,
