@@ -61,8 +61,7 @@ fun Calculator(modifier: Modifier = Modifier) {
     var input1 by remember { mutableStateOf(0.0) }
     var input2 by remember { mutableStateOf(0.0) }
     var selected_input by remember { mutableStateOf(0) }
-    var operation by remember { mutableStateOf<String?>(null) }
-    // var previousInput by remember { mutableStateOf<String?>(null) }
+    var operation by remember { mutableStateOf("×") }
     var clearOnNextDigit by remember { mutableStateOf(false) }
 
     fun calculateResult(): Pair<Double, Double> {
@@ -135,12 +134,6 @@ fun Calculator(modifier: Modifier = Modifier) {
     }
 
     fun onOperationClick(op: String) {
-        if (operation != null && !clearOnNextDigit) {
-            // val result = calculateResult()
-            // output1 = result.first
-            // output2 = result.second
-            operation = op
-        }
         operation = op
         // input1 = 0.0
         // input2 = 0.0
@@ -173,14 +166,14 @@ fun Calculator(modifier: Modifier = Modifier) {
 
 
     fun onEqualsClick() {
-        if (operation != null) {
-            val result = calculateResult()
-            output1 = result.first
-            output2 = result.second
-            operation = null
-            input1 = 0.0
-            input2 = 0.0
-        }
+        val result = calculateResult()
+        output1 = result.first
+        output2 = result.second
+
+        input1 = 0.0
+        input2 = 0.0
+        operation = "×" 
+        selected_input = 0
     }
 
     fun onRestartClick() {
@@ -188,7 +181,7 @@ fun Calculator(modifier: Modifier = Modifier) {
         output2 = 1.0
         input1 = 0.0
         input2 = 0.0
-        operation = null
+        operation = "×" 
         clearOnNextDigit = false
     }
     fun onClearClick() {
@@ -292,8 +285,19 @@ fun Calculator(modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
+            // First row - Multiplication operator alone
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                CalculatorButton(
+                    text = "×",
+                    onClick = { onOperationClick("×") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
-            // First row - Clear and operations
+            // Second row - Other operations
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -309,18 +313,13 @@ fun Calculator(modifier: Modifier = Modifier) {
                     modifier = Modifier.weight(1f)
                 )
                 CalculatorButton(
-                    text = "×",
-                    onClick = { onOperationClick("×") },
-                    modifier = Modifier.weight(1f)
-                )
-                CalculatorButton(
                     text = "-",
                     onClick = { onOperationClick("-") },
                     modifier = Modifier.weight(1f)
                 )
             }
 
-						// Row bis
+			// Row with numbers 1-3
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -342,7 +341,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                 )
             }
 
-            // Third row - 4, 5, 6
+            // Row with numbers 4-6
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -363,7 +362,8 @@ fun Calculator(modifier: Modifier = Modifier) {
                     modifier = Modifier.weight(1f)
                 )
             }
-            // Second row - 7, 8, 9, +
+            
+            // Row with numbers 7-9
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -385,15 +385,14 @@ fun Calculator(modifier: Modifier = Modifier) {
                 )
             }
 
-
-            // Fifth row - 0, .
+            // Row with decimal and 0
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 CalculatorButton(
-                    text = ".",
-                    onClick = { onDecimalClick() },
+                    text = "R",
+                    onClick = { onRestartClick() },
                     modifier = Modifier.weight(1f)
                 )
                 CalculatorButton(
@@ -402,13 +401,13 @@ fun Calculator(modifier: Modifier = Modifier) {
                     modifier = Modifier.weight(1f)
                 )
                 CalculatorButton(
-                    text = "=",
-                    onClick = { onEqualsClick() },
+                    text = ".",
+                    onClick = { onDecimalClick() },
                     modifier = Modifier.weight(1f)
                 )
             }
 
-						// Multiplier click
+			// Multiplier row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -435,17 +434,11 @@ fun Calculator(modifier: Modifier = Modifier) {
                 )
             }
 
-
-			// Some special ops
+			// Special ops row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                CalculatorButton(
-                    text = "R",
-                    onClick = { onRestartClick() },
-                    modifier = Modifier.weight(1f)
-                )
                 CalculatorButton(
                     text = "C",
                     onClick = { onClearClick() },
@@ -457,7 +450,18 @@ fun Calculator(modifier: Modifier = Modifier) {
                     modifier = Modifier.weight(1f)
                 )
             }
-
+            
+            // Last row - Equals operator alone
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                CalculatorButton(
+                    text = "=",
+                    onClick = { onEqualsClick() },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
 
         // Inputs
