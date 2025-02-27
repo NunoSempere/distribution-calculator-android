@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,23 +56,23 @@ fun Calculator(modifier: Modifier = Modifier) {
     var output2 by remember { mutableStateOf(1.0) }
     var input1 by remember { mutableStateOf(0.0) }
     var input2 by remember { mutableStateOf(0.0) }
-		var selected_input by remember { mutableStateOf(0) }
+    var selected_input by remember { mutableStateOf(0) }
     var operation by remember { mutableStateOf<String?>(null) }
     // var previousInput by remember { mutableStateOf<String?>(null) }
     var clearOnNextDigit by remember { mutableStateOf(false) }
 
     fun calculateResult(): Pair<Double, Double> {
-			  // Fake operation from now.
+        // Fake operation from now.
         return when (operation) {
             "+" -> Pair(output1 + input1, output2 + input2)
             "-" -> Pair(output1 - input1, output2 - input2)
             "x" -> Pair(output1 * input1, output2 * input2)
             "÷" -> {
-							  if (input2 == 0.0 || input1 == 0.0){
-									  Pair(output1, output2)
+                if (input2 == 0.0 || input1 == 0.0){
+                    Pair(output1, output2)
                     // TODO: "Error"
                 } else {
-										Pair(output1 / input1, output2 / input2)
+                    Pair(output1 / input1, output2 / input2)
                 }
             }
             else -> Pair(output1, output2)
@@ -78,73 +80,75 @@ fun Calculator(modifier: Modifier = Modifier) {
     }
 
     fun onNumberClick(number: Int) {
-			if (selected_input == 0) {
-				input1 = input1 * 10 + number
-			} else {
-				input2 = input1 * 10 + number
-			}
-			/*
+        if (selected_input == 0) {
+            input1 = input1 * 10 + number
+        } else {
+            input2 = input2 * 10 + number
+        }
+        /*
         input = if (input == 0 || clearOnNextDigit) {
             clearOnNextDigit = false
             // number.toString()
-						number
+            number
         } else {
-					  10 * input + number
-						// input + number.toString()
+            10 * input + number
+            // input + number.toString()
         }
-				*/
+        */
     }
 
     fun onOperationClick(op: String) {
         if (operation != null && !clearOnNextDigit) {
-					  val result = calculateResult()
-						output1 = result.first
-						output2 = result.second
+            val result = calculateResult()
+            output1 = result.first
+            output2 = result.second
         }
         operation = op
-				input1 = 0.0
-				input2 = 0.0
+        input1 = 0.0
+        input2 = 0.0
         clearOnNextDigit = true
     }
 
     fun onEqualsClick() {
         if (operation != null) {
-					  val result = calculateResult()
-						output1 = result.first
-						output2 = result.second
+            val result = calculateResult()
+            output1 = result.first
+            output2 = result.second
             operation = null
         }
     }
 
     fun onClearClick() {
-				output1 = 1.0
-				output2 = 1.0
+        output1 = 1.0
+        output2 = 1.0
+        input1 = 0.0
+        input2 = 0.0
         operation = null
         clearOnNextDigit = false
     }
 
     fun onDecimalClick() {
-			// TO DO: fix later
-			/*
+        // TO DO: fix later
+        /*
         if (clearOnNextDigit) {
             input = "0."
             clearOnNextDigit = false
         } else if (!input.contains(".")) {
             input = "$input."
         }
-			*/
+        */
     }
     fun onSwitchClick() {
-			selected_input = (selected_input + 1) % 2
-			// TO DO: fix later
-			/*
+        selected_input = (selected_input + 1) % 2
+        // TO DO: fix later
+        /*
         if (clearOnNextDigit) {
             input = "0."
             clearOnNextDigit = false
         } else if (!input.contains(".")) {
             input = "$input."
         }
-			*/
+        */
     }
 
     Column(
@@ -154,7 +158,7 @@ fun Calculator(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         // Display
-				
+        
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -163,38 +167,38 @@ fun Calculator(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-								Box(
-										modifier = Modifier
-												.height(100.dp)
-												.background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
-												.padding(16.dp),
-										contentAlignment = Alignment.CenterEnd
-								) {
-										Text(
-												text = output1.toString(),
-												fontSize = 40.sp,
-												fontWeight = FontWeight.Bold,
-												textAlign = TextAlign.End,
-												maxLines = 1
-										)
-								}
-								Box(
-										modifier = Modifier
-												.height(100.dp)
-												.background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
-												.padding(16.dp),
-										contentAlignment = Alignment.CenterEnd
-								) {
-										Text(
-												text = output2.toString(),
-												fontSize = 40.sp,
-												fontWeight = FontWeight.Bold,
-												textAlign = TextAlign.End,
-												maxLines = 1
-										)
-								}
+                Box(
+                    modifier = Modifier
+                        .height(100.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+                        .padding(16.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    Text(
+                        text = output1.toString(),
+                        fontSize = 40.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.End,
+                        maxLines = 1
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .height(100.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+                        .padding(16.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    Text(
+                        text = output2.toString(),
+                        fontSize = 40.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.End,
+                        maxLines = 1
+                    )
+                }
             }
-				}
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -330,48 +334,68 @@ fun Calculator(modifier: Modifier = Modifier) {
             }
         }
 
-				// Inputs
+        // Inputs
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // First row - Clear and operations
+            // Input boxes with decorators to show which is selected
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-								Box(
-										modifier = Modifier
-												.height(100.dp)
-												.background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
-												.padding(16.dp),
-										contentAlignment = Alignment.CenterEnd
-								) {
-										Text(
-												text = input1.toString(),
-												fontSize = 40.sp,
-												fontWeight = FontWeight.Bold,
-												textAlign = TextAlign.End,
-												maxLines = 1
-										)
-								}
-								Box(
-										modifier = Modifier
-												.height(100.dp)
-												.background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
-												.padding(16.dp),
-										contentAlignment = Alignment.CenterEnd
-								) {
-										Text(
-												text = input2.toString(),
-												fontSize = 40.sp,
-												fontWeight = FontWeight.Bold,
-												textAlign = TextAlign.End,
-												maxLines = 1
-										)
-								}
+                Box(
+                    modifier = Modifier
+                        .height(100.dp)
+                        .weight(1f)
+                        .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+                        .border(
+                            width = if (selected_input == 0) 3.dp else 0.dp,
+                            color = if (selected_input == 0) MaterialTheme.colorScheme.primary else Color.Transparent,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(16.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    Text(
+                        text = input1.toString(),
+                        fontSize = 40.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.End,
+                        maxLines = 1
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .height(100.dp)
+                        .weight(1f)
+                        .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+                        .border(
+                            width = if (selected_input == 1) 3.dp else 0.dp,
+                            color = if (selected_input == 1) MaterialTheme.colorScheme.primary else Color.Transparent,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(16.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    Text(
+                        text = input2.toString(),
+                        fontSize = 40.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.End,
+                        maxLines = 1
+                    )
+                }
             }
-				}
-
+            
+            // Add a text label to indicate which input is selected
+            Text(
+                text = "Currently editing: Input ${selected_input + 1}",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 
