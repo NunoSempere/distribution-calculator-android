@@ -10,7 +10,7 @@ The idea is to have a simple app that is able to help people operate with distri
 
 ## Getting started
 
-Download the apk, from Github releases (TODO).
+Download the apk, from Github releases, [here](https://github.com/NunoSempere/distribution-calculator-android/releases). Google may ask you to scan it, it doesn't take that long.
 
 ## Example usage
 
@@ -33,12 +33,12 @@ Distributed with the MIT license, see LICENSE.txt
 ### Public v0.0.1
 
 - [x] Come up with logo
-- [ ] Publish README
-- [ ] Publish apk
-- [ ] Think how to deliver it.
-  - Github? 
+- [x] Publish README
+- [x] Publish apk
+- [x] Think how to deliver it.
+  - [x] Github? 
   - Own webpage
-  - F-Droid?
+  - F-Droid? <= could be a good way 
 
 ### MVP 
 
