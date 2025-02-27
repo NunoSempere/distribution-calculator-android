@@ -37,14 +37,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 import com.example.distributioncalculator.ui.theme.CommandColor
 import com.example.distributioncalculator.ui.theme.DistributionCalculatorTheme
 import com.example.distributioncalculator.ui.theme.EqualColor
 import com.example.distributioncalculator.ui.theme.NumberColor
 import com.example.distributioncalculator.ui.theme.OperationColor
 import com.example.distributioncalculator.ui.theme.UnitColor
+
 import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.math.ln
+import kotlin.math.sqrt
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +66,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Calculator(modifier: Modifier = Modifier) {
+
     var output1 by remember { mutableStateOf(1.0) }
     var output2 by remember { mutableStateOf(1.0) }
     var input1 by remember { mutableStateOf(0.0) }
@@ -71,6 +76,8 @@ fun Calculator(modifier: Modifier = Modifier) {
     var on_decimal_input by remember {mutableStateOf(0)}
     var on_decimal_level by remember {mutableStateOf(-1)}
 
+
+    /* Algebra */
     fun calculateResult(): Pair<Double, Double> {
         // Fake operation from now.
         return when (operation) {
