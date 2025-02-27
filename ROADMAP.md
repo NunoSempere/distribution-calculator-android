@@ -11,6 +11,7 @@ Steps when using it:
 - Clear on double tap?
 - Add separators / different colors
 - [x] Big x and = buttons 
+- [ ] Error checking
 - [ ] Add algebra
 - [ ] Publish README
 - [ ] Publish apk

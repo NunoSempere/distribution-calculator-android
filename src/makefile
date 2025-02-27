@@ -78,7 +78,8 @@ emu-list:
 	emulator -list-avds
 
 emu-start:
-	ANDROID_SDK_ROOT=/home/nuno/Android/Sdk emulator -avd Medium_Phone_API_35
+	# ANDROID_SDK_ROOT=/home/nuno/Android/Sdk emulator -avd Medium_Phone_API_35
+	ANDROID_SDK_ROOT=/home/nuno/Android/Sdk emulator -avd Pixel_8_Pro_API_35
 	# must be first installed from android studio
 	#
 
@@ -86,3 +87,7 @@ edit:
 	nvim app/src/main/java/com/example/distributioncalculator/MainActivity.kt
 
 
+record:
+	adb shell screenrecord /sdcard/video.mp4
+	# adb pull /sdcard/video.mp4
+	# adb shell rm /sdcard/video.mp4
