@@ -83,6 +83,6 @@ emu-start:
 	#
 
 edit:
-	vim app/src/main/java/com/example/distributioncalculator/MainActivity.kt
+	nvim app/src/main/java/com/example/distributioncalculator/MainActivity.kt
 
 
