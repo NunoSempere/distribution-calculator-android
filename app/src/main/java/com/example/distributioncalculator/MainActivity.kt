@@ -391,7 +391,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 CalculatorButton(
-                    text = "R",
+                    text = "Restart",
                     onClick = { onRestartClick() },
                     modifier = Modifier.weight(1f)
                 )
@@ -440,7 +440,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 CalculatorButton(
-                    text = "C",
+                    text = "Clear",
                     onClick = { onClearClick() },
                     modifier = Modifier.weight(1f)
                 )
