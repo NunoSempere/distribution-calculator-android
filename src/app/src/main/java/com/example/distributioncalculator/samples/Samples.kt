@@ -1,3 +1,5 @@
+package com.example.distributioncalculator.samples
+
 import kotlin.random.Random
 import kotlin.math
 
@@ -70,7 +72,7 @@ fun multiplySamplesArray(xs: Distribution.SamplesArray, ys: Distribution.Samples
   return Distribution.SamplesArray(zs)
 }
 
-fun multiplyDists(d1: Distribution, d2: Distribution): Distribution {
+fun MultiplyDists(d1: Distribution, d2: Distribution): Distribution {
   when {
     d1 is Distribution.Lognormal    && d2 is Distribution.Lognormal -> multiplyLogDists(d1, d2)
     d1 is Distribution.Lognormal && d2 is Distribution.SamplesArray -> multiplySamplesArray(lognormalToSamples(d1), d2)
