@@ -1,0 +1,16 @@
+*.iml
+/src/.gradle
+/src/local.properties
+/src/.idea/caches
+/src/.idea/libraries
+/src/.idea/modules.xml
+/src/.idea/workspace.xml
+/src/.idea/navEditor.xml
+/src/.idea/assetWizardSettings.xml
+/src.DS_Store
+/src/build
+/src/captures
+/src.externalNativeBuild
+/src.cxx
+/srclocal.properties
+*.swp
