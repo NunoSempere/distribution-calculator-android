@@ -99,16 +99,16 @@ fun Calculator(modifier: Modifier = Modifier) {
     fun toPrettyString(d: Double): String {
         return when {
             abs(d) >= 1_000_000_000_000.0 -> {
-                "%.2fT".format(d / 1_000_000_000_000.0)
+                "%.1fT".format(d / 1_000_000_000_000.0)
             }
             abs(d) >= 1_000_000_000.0 -> {
-                "%.2fB".format(d / 1_000_000_000.0)
+                "%.1fB".format(d / 1_000_000_000.0)
             }
             abs(d) >= 1_000_000.0 -> {
-                "%.2fM".format(d / 1_000_000.0)
+                "%.1fM".format(d / 1_000_000.0)
             }
             abs(d) >= 1_000.0 -> {
-                "%.2fK".format(d / 1_000.0)
+                "%.1fK".format(d / 1_000.0)
             }
             abs(d) <= 0.0001 -> {
                 d.toString()
@@ -406,7 +406,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 CalculatorButton(
-                    text = "Restart",
+                    text = "↻",
                     onClick = { onRestartClick() },
                     modifier = Modifier.weight(1f),
                     buttonType = ButtonType.COMMAND
