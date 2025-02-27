@@ -3,12 +3,11 @@ Steps when using it:
 - [x] Change behavior of clear to clear output as well
 - [x] Add K/M/B suffixes
 - [x] Add %
-- [ ] Fix usage of "."
-- [ ] Move selection back to first item after 
-- [ ] Select * as default?
-- [ ] Fix 
+- [x] Fix usage of "."
+- [x] Move selection back to first item after = 
+- [x] Select * as default?
 - [-] Add backspace
-- [ ] Make X more prominent
+- [x] Make X more prominent
 - Clear on double tap?
 - Add separators / different colors
 - [x] Big x and = buttons 
