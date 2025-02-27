@@ -6,3 +6,4 @@ Steps when using it:
 - Add backspace
 - Make X more prominent
 - Clear on double tap?
+- Add separators
