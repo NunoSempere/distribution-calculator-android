@@ -230,30 +230,30 @@ fun Calculator(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(8.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         // Display
         
         Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             // Output boxes with different style from inputs
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Box(
                     modifier = Modifier
-                        .height(100.dp)
+                        .height(80.dp)
                         .weight(1f)
                         .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
-                        .padding(16.dp),
+                        .padding(12.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Text(
                         text = toPrettyString(output_tag_low),
-                        fontSize = 40.sp,
+                        fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.End,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -262,15 +262,15 @@ fun Calculator(modifier: Modifier = Modifier) {
                 }
                 Box(
                     modifier = Modifier
-                        .height(100.dp)
+                        .height(80.dp)
                         .weight(1f)
                         .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
-                        .padding(16.dp),
+                        .padding(12.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Text(
                         text = toPrettyString(output_tag_high),
-                        fontSize = 40.sp,
+                        fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.End,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -280,17 +280,17 @@ fun Calculator(modifier: Modifier = Modifier) {
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         // Buttons
         Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
 
             // First row - Multiplication operator alone
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 CalculatorButton(
                     text = "×",
@@ -303,7 +303,7 @@ fun Calculator(modifier: Modifier = Modifier) {
             // Second row - Other operations
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 CalculatorButton(
                     text = "+",
@@ -328,7 +328,7 @@ fun Calculator(modifier: Modifier = Modifier) {
 			// Row with numbers 1-3
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 CalculatorButton(
                     text = "1",
@@ -353,7 +353,7 @@ fun Calculator(modifier: Modifier = Modifier) {
             // Row with numbers 4-6
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 CalculatorButton(
                     text = "4",
@@ -378,7 +378,7 @@ fun Calculator(modifier: Modifier = Modifier) {
             // Row with numbers 7-9
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 CalculatorButton(
                     text = "7",
@@ -403,7 +403,7 @@ fun Calculator(modifier: Modifier = Modifier) {
             // Row with decimal and 0
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 CalculatorButton(
                     text = "↻",
@@ -428,7 +428,7 @@ fun Calculator(modifier: Modifier = Modifier) {
 			// Special ops row
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 CalculatorButton(
                     text = "Clear",
@@ -447,7 +447,7 @@ fun Calculator(modifier: Modifier = Modifier) {
 			// Multiplier row
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 CalculatorButton(
                     text = "K",
@@ -479,7 +479,7 @@ fun Calculator(modifier: Modifier = Modifier) {
             // Last row - Equals operator alone
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 CalculatorButton(
                     text = "=",
@@ -492,16 +492,16 @@ fun Calculator(modifier: Modifier = Modifier) {
 
         // Inputs
         Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             // Input boxes with decorators to show which is selected
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Box(
                     modifier = Modifier
-                        .height(100.dp)
+                        .height(80.dp)
                         .weight(1f)
                         .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
                         .border(
@@ -510,12 +510,12 @@ fun Calculator(modifier: Modifier = Modifier) {
                             shape = RectangleShape
                         )
                         .clickable { selected_input = 0; on_decimal_input = 0; on_decimal_level = -1 }
-                        .padding(16.dp),
+                        .padding(12.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Text(
                         text = toPrettyString(input_field_low),
-                        fontSize = 40.sp,
+                        fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.End,
                         maxLines = 1
@@ -523,7 +523,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                 }
                 Box(
                     modifier = Modifier
-                        .height(100.dp)
+                        .height(80.dp)
                         .weight(1f)
                         .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
                         .border(
@@ -532,12 +532,12 @@ fun Calculator(modifier: Modifier = Modifier) {
                             shape = RectangleShape
                         )
                         .clickable { selected_input = 1; on_decimal_input = 0; on_decimal_level = -1 }
-                        .padding(16.dp),
+                        .padding(12.dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Text(
                         text = toPrettyString(input_field_high),
-                        fontSize = 40.sp,
+                        fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.End,
                         maxLines = 1
@@ -576,7 +576,7 @@ fun CalculatorButton(
     Button(
         onClick = onClick,
         modifier = modifier
-            .height(64.dp),
+            .height(48.dp),
         shape = RectangleShape,
         colors = ButtonDefaults.buttonColors(
             containerColor = buttonColor
@@ -584,7 +584,7 @@ fun CalculatorButton(
     ) {
         Text(
             text = text,
-            fontSize = 24.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
     }
