@@ -24,7 +24,7 @@ help:
 # Build the debug APK
 .PHONY: build
 build:
-	$(GRADLE) assembleDebug
+	$(GRADLE) assembleDebug 
 
 # Install the debug APK on a connected device
 .PHONY: install
