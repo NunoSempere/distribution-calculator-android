@@ -52,8 +52,9 @@ class MainActivity : ComponentActivity() {
 fun Calculator(modifier: Modifier = Modifier) {
     var output1 by remember { mutableStateOf(1.0) }
     var output2 by remember { mutableStateOf(1.0) }
-    var input1 by remember { mutableStateOf(1.0) }
-    var input2 by remember { mutableStateOf(1.0) }
+    var input1 by remember { mutableStateOf(0.0) }
+    var input2 by remember { mutableStateOf(0.0) }
+		var selected_input by remember { mutableStateOf(0) }
     var operation by remember { mutableStateOf<String?>(null) }
     // var previousInput by remember { mutableStateOf<String?>(null) }
     var clearOnNextDigit by remember { mutableStateOf(false) }
@@ -77,6 +78,11 @@ fun Calculator(modifier: Modifier = Modifier) {
     }
 
     fun onNumberClick(number: Int) {
+			if (selected_input == 0) {
+				input1 = input1 * 10 + number
+			} else {
+				input2 = input1 * 10 + number
+			}
 			/*
         input = if (input == 0 || clearOnNextDigit) {
             clearOnNextDigit = false
@@ -96,8 +102,8 @@ fun Calculator(modifier: Modifier = Modifier) {
 						output2 = result.second
         }
         operation = op
-				input1 = 1.0
-				input2 = 1.0
+				input1 = 0.0
+				input2 = 0.0
         clearOnNextDigit = true
     }
 
@@ -118,6 +124,18 @@ fun Calculator(modifier: Modifier = Modifier) {
     }
 
     fun onDecimalClick() {
+			// TO DO: fix later
+			/*
+        if (clearOnNextDigit) {
+            input = "0."
+            clearOnNextDigit = false
+        } else if (!input.contains(".")) {
+            input = "$input."
+        }
+			*/
+    }
+    fun onSwitchClick() {
+			selected_input = (selected_input + 1) % 2
 			// TO DO: fix later
 			/*
         if (clearOnNextDigit) {
@@ -296,11 +314,16 @@ fun Calculator(modifier: Modifier = Modifier) {
                 CalculatorButton(
                     text = "0",
                     onClick = { onNumberClick(0) },
-                    modifier = Modifier.weight(2f)
+                    modifier = Modifier.weight(1f)
                 )
                 CalculatorButton(
                     text = ".",
                     onClick = { onDecimalClick() },
+                    modifier = Modifier.weight(1f)
+                )
+                CalculatorButton(
+                    text = "<>",
+                    onClick = { onSwitchClick() },
                     modifier = Modifier.weight(1f)
                 )
                 Spacer(modifier = Modifier.weight(1f))
