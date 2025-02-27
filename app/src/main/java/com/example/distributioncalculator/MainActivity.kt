@@ -50,70 +50,83 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Calculator(modifier: Modifier = Modifier) {
-    var input by remember { mutableStateOf("0") }
+    var output1 by remember { mutableStateOf(1.0) }
+    var output2 by remember { mutableStateOf(1.0) }
+    var input1 by remember { mutableStateOf(1.0) }
+    var input2 by remember { mutableStateOf(1.0) }
     var operation by remember { mutableStateOf<String?>(null) }
-    var previousInput by remember { mutableStateOf<String?>(null) }
+    // var previousInput by remember { mutableStateOf<String?>(null) }
     var clearOnNextDigit by remember { mutableStateOf(false) }
 
-    fun calculateResult(): String {
-        val firstNumber = previousInput?.toDoubleOrNull() ?: 0.0
-        val secondNumber = input.toDoubleOrNull() ?: 0.0
-
+    fun calculateResult(): Pair<Double, Double> {
+			  // Fake operation from now.
         return when (operation) {
-            "+" -> (firstNumber + secondNumber).toString()
-            "-" -> (firstNumber - secondNumber).toString()
-            "×" -> (firstNumber * secondNumber).toString()
+            "+" -> Pair(output1 + input1, output2 + input2)
+            "-" -> Pair(output1 - input1, output2 - input2)
+            "x" -> Pair(output1 * input1, output2 * input2)
             "÷" -> {
-                if (secondNumber == 0.0) {
-                    "Error"
+							  if (input2 == 0.0 || input1 == 0.0){
+									  Pair(output1, output2)
+                    // TODO: "Error"
                 } else {
-                    (firstNumber / secondNumber).toString()
+										Pair(output1 / input1, output2 / input2)
                 }
             }
-            else -> input
+            else -> Pair(output1, output2)
         }
     }
 
     fun onNumberClick(number: Int) {
-        input = if (input == "0" || clearOnNextDigit) {
+			/*
+        input = if (input == 0 || clearOnNextDigit) {
             clearOnNextDigit = false
-            number.toString()
+            // number.toString()
+						number
         } else {
-            input + number.toString()
+					  10 * input + number
+						// input + number.toString()
         }
+				*/
     }
 
     fun onOperationClick(op: String) {
         if (operation != null && !clearOnNextDigit) {
-            input = calculateResult()
+					  val result = calculateResult()
+						output1 = result.first
+						output2 = result.second
         }
         operation = op
-        previousInput = input
+				input1 = 1.0
+				input2 = 1.0
         clearOnNextDigit = true
     }
 
     fun onEqualsClick() {
         if (operation != null) {
-            input = calculateResult()
+					  val result = calculateResult()
+						output1 = result.first
+						output2 = result.second
             operation = null
-            previousInput = null
         }
     }
 
     fun onClearClick() {
-        input = "0"
+				output1 = 1.0
+				output2 = 1.0
         operation = null
-        previousInput = null
         clearOnNextDigit = false
     }
 
     fun onDecimalClick() {
+			// TO DO: fix later
+			/*
         if (clearOnNextDigit) {
             input = "0."
             clearOnNextDigit = false
         } else if (!input.contains(".")) {
             input = "$input."
         }
+			*/
     }
 
     Column(
@@ -123,22 +136,47 @@ fun Calculator(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         // Display
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
-                .padding(16.dp),
-            contentAlignment = Alignment.CenterEnd
+				
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = input,
-                fontSize = 40.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.End,
-                maxLines = 1
-            )
-        }
+            // First row - Clear and operations
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+								Box(
+										modifier = Modifier
+												.height(100.dp)
+												.background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+												.padding(16.dp),
+										contentAlignment = Alignment.CenterEnd
+								) {
+										Text(
+												text = output1.toString(),
+												fontSize = 40.sp,
+												fontWeight = FontWeight.Bold,
+												textAlign = TextAlign.End,
+												maxLines = 1
+										)
+								}
+								Box(
+										modifier = Modifier
+												.height(100.dp)
+												.background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+												.padding(16.dp),
+										contentAlignment = Alignment.CenterEnd
+								) {
+										Text(
+												text = output2.toString(),
+												fontSize = 40.sp,
+												fontWeight = FontWeight.Bold,
+												textAlign = TextAlign.End,
+												maxLines = 1
+										)
+								}
+            }
+				}
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -268,22 +306,49 @@ fun Calculator(modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.weight(1f))
             }
         }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
-                .padding(16.dp),
-            contentAlignment = Alignment.CenterEnd
+
+				// Inputs
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = input,
-                fontSize = 40.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.End,
-                maxLines = 1
-            )
-        }
+            // First row - Clear and operations
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+								Box(
+										modifier = Modifier
+												.height(100.dp)
+												.background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+												.padding(16.dp),
+										contentAlignment = Alignment.CenterEnd
+								) {
+										Text(
+												text = input1.toString(),
+												fontSize = 40.sp,
+												fontWeight = FontWeight.Bold,
+												textAlign = TextAlign.End,
+												maxLines = 1
+										)
+								}
+								Box(
+										modifier = Modifier
+												.height(100.dp)
+												.background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+												.padding(16.dp),
+										contentAlignment = Alignment.CenterEnd
+								) {
+										Text(
+												text = input2.toString(),
+												fontSize = 40.sp,
+												fontWeight = FontWeight.Bold,
+												textAlign = TextAlign.End,
+												maxLines = 1
+										)
+								}
+            }
+				}
+
     }
 }
 
