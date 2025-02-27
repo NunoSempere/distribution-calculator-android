@@ -239,11 +239,6 @@ fun Calculator(modifier: Modifier = Modifier) {
                     modifier = Modifier.weight(1f)
                 )
                 CalculatorButton(
-                    text = "=",
-                    onClick = { onEqualsClick() },
-                    modifier = Modifier.weight(1f)
-                )
-                CalculatorButton(
                     text = "C",
                     onClick = { onClearClick() },
                     modifier = Modifier.weight(1f)
@@ -361,6 +356,18 @@ fun Calculator(modifier: Modifier = Modifier) {
                     modifier = Modifier.weight(1f)
                 )
             }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                CalculatorButton(
+                    text = "=",
+                    onClick = { onEqualsClick() },
+                    modifier = Modifier.weight(1f)
+                )
+						}
+
         }
 
         // Inputs
