@@ -68,9 +68,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Calculator(modifier: Modifier = Modifier) {
  
-    var output by remember { mutableStateOf(
+    var output by remember { mutableStateOf<Distribution>(
         Distribution.Lognormal(low = 1.0, high = 1.0)
     )}
+
     var output1 by remember { mutableStateOf(1.0) }
     var output2 by remember { mutableStateOf(1.0) }
     var input1 by remember { mutableStateOf(0.0) }
@@ -84,26 +85,36 @@ fun Calculator(modifier: Modifier = Modifier) {
     /* Algebra */
     fun calculateResult(): Pair<Double, Double> {
         // Fake operation from now.
+        val linput = Distribution.Lognormal(low = input1, high = input2)
         return when (operation) {
-            "+" -> Pair(output1 + input1, output2 + input2)
-            "-" -> Pair(output1 - input1, output2 - input2)
             "×" -> {
-                val linput = Distribution.Lognormal(low = input1, high = input2)
-                val loutput = Distribution.Lognormal(low = output1, high = output2)
                 val result = MultiplyDists(linput, loutput)
                 when(result) {
-                    is Distribution.Lognormal -> Pair(result.low, result.high)
-                    else -> Pair(output1, output2)
+                    is Distribution.Lognormal -> {
+                        return Pair(result.low, result.high)
+                        // return result
+                    }
+                    is SamplesArray -> {
+                        val result_copy = result.CopyOf(result.samples)
+                        result_copy.sort()
+                        val result_copy_low = result_copy[5_000]
+                        val result_copy_high = result_copy[95_000]
+                        Pair(result_copy_low, result_copy_high)
+                        // return result
+                    }
                 }
             }
             "÷" -> {
                 if (input2 == 0.0 || input1 == 0.0){
+                    throw IllegalArgumentException("Can't divide by zero")
                     Pair(output1, output2)
                     // TODO: "Error"
                 } else {
                     Pair(output1 / input1, output2 / input2)
                 }
             }
+            "+" -> Pair(output1 + input1, output2 + input2)
+            "-" -> Pair(output1 - input1, output2 - input2)
             else -> Pair(output1, output2)
         }
     }
