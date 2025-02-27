@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,9 +16,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -27,7 +34,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,7 +50,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             DistributionCalculatorTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Calculator(modifier = Modifier.padding(innerPadding))
+                    DistributionCalculator(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -49,187 +58,147 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Calculator(modifier: Modifier = Modifier) {
-    var output1 by remember { mutableStateOf(1.0) }
-    var output2 by remember { mutableStateOf(1.0) }
-    var input1 by remember { mutableStateOf(0.0) }
-    var input2 by remember { mutableStateOf(0.0) }
-		var selected_input by remember { mutableStateOf(0) }
-    var operation by remember { mutableStateOf<String?>(null) }
-    // var previousInput by remember { mutableStateOf<String?>(null) }
-    var clearOnNextDigit by remember { mutableStateOf(false) }
+fun DistributionCalculator(modifier: Modifier = Modifier) {
+    // Input states for first distribution
+    var mean1 by remember { mutableStateOf("0") }
+    var stdDev1 by remember { mutableStateOf("1") }
+    
+    // Input states for second distribution
+    var mean2 by remember { mutableStateOf("0") }
+    var stdDev2 by remember { mutableStateOf("1") }
+    
+    // Output states
+    var resultMean by remember { mutableStateOf("0") }
+    var resultStdDev by remember { mutableStateOf("0") }
+    
+    // Current operation
+    var operation by remember { mutableStateOf("+") }
+    
+    // Current input field focus
+    var currentInputField by remember { mutableStateOf("mean1") }
 
-    fun calculateResult(): Pair<Double, Double> {
-			  // Fake operation from now.
-        return when (operation) {
-            "+" -> Pair(output1 + input1, output2 + input2)
-            "-" -> Pair(output1 - input1, output2 - input2)
-            "x" -> Pair(output1 * input1, output2 * input2)
+    fun calculateDistribution() {
+        // This is a stub for the actual distribution calculation logic
+        // In a real implementation, this would perform statistical operations on distributions
+        
+        val m1 = mean1.toDoubleOrNull() ?: 0.0
+        val sd1 = stdDev1.toDoubleOrNull() ?: 1.0
+        val m2 = mean2.toDoubleOrNull() ?: 0.0
+        val sd2 = stdDev2.toDoubleOrNull() ?: 1.0
+        
+        // Simple placeholder calculations
+        when (operation) {
+            "+" -> {
+                // For addition of independent random variables, means add and variances add
+                resultMean = (m1 + m2).toString()
+                resultStdDev = Math.sqrt(sd1 * sd1 + sd2 * sd2).toString()
+            }
+            "-" -> {
+                // For subtraction of independent random variables
+                resultMean = (m1 - m2).toString()
+                resultStdDev = Math.sqrt(sd1 * sd1 + sd2 * sd2).toString()
+            }
+            "×" -> {
+                // This is a placeholder - multiplication of distributions is more complex
+                resultMean = (m1 * m2).toString()
+                resultStdDev = (sd1 * sd2).toString()
+            }
             "÷" -> {
-							  if (input2 == 0.0 || input1 == 0.0){
-									  Pair(output1, output2)
-                    // TODO: "Error"
+                // This is a placeholder - division of distributions is more complex
+                if (m2 != 0.0) {
+                    resultMean = (m1 / m2).toString()
+                    resultStdDev = (sd1 / sd2).toString()
                 } else {
-										Pair(output1 / input1, output2 / input2)
+                    resultMean = "Error"
+                    resultStdDev = "Error"
                 }
             }
-            else -> Pair(output1, output2)
         }
     }
-
+    
     fun onNumberClick(number: Int) {
-			if (selected_input == 0) {
-				input1 = input1 * 10 + number
-			} else {
-				input2 = input1 * 10 + number
-			}
-			/*
-        input = if (input == 0 || clearOnNextDigit) {
-            clearOnNextDigit = false
-            // number.toString()
-						number
-        } else {
-					  10 * input + number
-						// input + number.toString()
-        }
-				*/
-    }
-
-    fun onOperationClick(op: String) {
-        if (operation != null && !clearOnNextDigit) {
-					  val result = calculateResult()
-						output1 = result.first
-						output2 = result.second
-        }
-        operation = op
-				input1 = 0.0
-				input2 = 0.0
-        clearOnNextDigit = true
-    }
-
-    fun onEqualsClick() {
-        if (operation != null) {
-					  val result = calculateResult()
-						output1 = result.first
-						output2 = result.second
-            operation = null
+        when (currentInputField) {
+            "mean1" -> mean1 = if (mean1 == "0") number.toString() else mean1 + number.toString()
+            "stdDev1" -> stdDev1 = if (stdDev1 == "0") number.toString() else stdDev1 + number.toString()
+            "mean2" -> mean2 = if (mean2 == "0") number.toString() else mean2 + number.toString()
+            "stdDev2" -> stdDev2 = if (stdDev2 == "0") number.toString() else stdDev2 + number.toString()
         }
     }
-
+    
     fun onClearClick() {
-				output1 = 1.0
-				output2 = 1.0
-        operation = null
-        clearOnNextDigit = false
+        when (currentInputField) {
+            "mean1" -> mean1 = "0"
+            "stdDev1" -> stdDev1 = "0"
+            "mean2" -> mean2 = "0"
+            "stdDev2" -> stdDev2 = "0"
+        }
     }
-
+    
     fun onDecimalClick() {
-			// TO DO: fix later
-			/*
-        if (clearOnNextDigit) {
-            input = "0."
-            clearOnNextDigit = false
-        } else if (!input.contains(".")) {
-            input = "$input."
+        when (currentInputField) {
+            "mean1" -> if (!mean1.contains(".")) mean1 = "$mean1."
+            "stdDev1" -> if (!stdDev1.contains(".")) stdDev1 = "$stdDev1."
+            "mean2" -> if (!mean2.contains(".")) mean2 = "$mean2."
+            "stdDev2" -> if (!stdDev2.contains(".")) stdDev2 = "$stdDev2."
         }
-			*/
-    }
-    fun onSwitchClick() {
-			selected_input = (selected_input + 1) % 2
-			// TO DO: fix later
-			/*
-        if (clearOnNextDigit) {
-            input = "0."
-            clearOnNextDigit = false
-        } else if (!input.contains(".")) {
-            input = "$input."
-        }
-			*/
     }
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.SpaceBetween
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Display
-				
+        // Title
+        Text(
+            text = "Distribution Calculator",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+        
+        // First Distribution Input
+        DistributionInput(
+            title = "Distribution 1",
+            mean = mean1,
+            stdDev = stdDev1,
+            onMeanChange = { mean1 = it },
+            onStdDevChange = { stdDev1 = it },
+            onMeanFocus = { currentInputField = "mean1" },
+            onStdDevFocus = { currentInputField = "stdDev1" },
+            currentField = currentInputField
+        )
+        
+        // Operation Selection
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            OperationButton(text = "+", isSelected = operation == "+") { operation = "+"; calculateDistribution() }
+            OperationButton(text = "-", isSelected = operation == "-") { operation = "-"; calculateDistribution() }
+            OperationButton(text = "×", isSelected = operation == "×") { operation = "×"; calculateDistribution() }
+            OperationButton(text = "÷", isSelected = operation == "÷") { operation = "÷"; calculateDistribution() }
+        }
+        
+        // Second Distribution Input
+        DistributionInput(
+            title = "Distribution 2",
+            mean = mean2,
+            stdDev = stdDev2,
+            onMeanChange = { mean2 = it },
+            onStdDevChange = { stdDev2 = it },
+            onMeanFocus = { currentInputField = "mean2" },
+            onStdDevFocus = { currentInputField = "stdDev2" },
+            currentField = currentInputField
+        )
+        
+        // Number Pad
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // First row - Clear and operations
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-								Box(
-										modifier = Modifier
-												.height(100.dp)
-												.background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
-												.padding(16.dp),
-										contentAlignment = Alignment.CenterEnd
-								) {
-										Text(
-												text = output1.toString(),
-												fontSize = 40.sp,
-												fontWeight = FontWeight.Bold,
-												textAlign = TextAlign.End,
-												maxLines = 1
-										)
-								}
-								Box(
-										modifier = Modifier
-												.height(100.dp)
-												.background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
-												.padding(16.dp),
-										contentAlignment = Alignment.CenterEnd
-								) {
-										Text(
-												text = output2.toString(),
-												fontSize = 40.sp,
-												fontWeight = FontWeight.Bold,
-												textAlign = TextAlign.End,
-												maxLines = 1
-										)
-								}
-            }
-				}
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Buttons
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            // First row - Clear and operations
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                CalculatorButton(
-                    text = "C",
-                    onClick = { onClearClick() },
-                    modifier = Modifier.weight(1f)
-                )
-                CalculatorButton(
-                    text = "÷",
-                    onClick = { onOperationClick("÷") },
-                    modifier = Modifier.weight(1f)
-                )
-                CalculatorButton(
-                    text = "×",
-                    onClick = { onOperationClick("×") },
-                    modifier = Modifier.weight(1f)
-                )
-                CalculatorButton(
-                    text = "-",
-                    onClick = { onOperationClick("-") },
-                    modifier = Modifier.weight(1f)
-                )
-            }
-
-            // Second row - 7, 8, 9, +
+            // First row - 7, 8, 9
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -249,14 +218,9 @@ fun Calculator(modifier: Modifier = Modifier) {
                     onClick = { onNumberClick(9) },
                     modifier = Modifier.weight(1f)
                 )
-                CalculatorButton(
-                    text = "+",
-                    onClick = { onOperationClick("+") },
-                    modifier = Modifier.weight(1f)
-                )
             }
 
-            // Third row - 4, 5, 6
+            // Second row - 4, 5, 6
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -276,14 +240,9 @@ fun Calculator(modifier: Modifier = Modifier) {
                     onClick = { onNumberClick(6) },
                     modifier = Modifier.weight(1f)
                 )
-                CalculatorButton(
-                    text = "=",
-                    onClick = { onEqualsClick() },
-                    modifier = Modifier.weight(1f)
-                )
             }
 
-            // Fourth row - 1, 2, 3, =
+            // Third row - 1, 2, 3
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -303,10 +262,9 @@ fun Calculator(modifier: Modifier = Modifier) {
                     onClick = { onNumberClick(3) },
                     modifier = Modifier.weight(1f)
                 )
-                Spacer(modifier = Modifier.weight(1f))
             }
 
-            // Fifth row - 0, .
+            // Fourth row - 0, ., C
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -322,56 +280,170 @@ fun Calculator(modifier: Modifier = Modifier) {
                     modifier = Modifier.weight(1f)
                 )
                 CalculatorButton(
-                    text = "<>",
-                    onClick = { onSwitchClick() },
+                    text = "C",
+                    onClick = { onClearClick() },
                     modifier = Modifier.weight(1f)
                 )
-                Spacer(modifier = Modifier.weight(1f))
             }
         }
-
-				// Inputs
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        
+        // Calculate Button
+        Button(
+            onClick = { calculateDistribution() },
+            modifier = Modifier.fillMaxWidth()
         ) {
-            // First row - Clear and operations
+            Text(
+                text = "Calculate",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        
+        // Result Display
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+                .padding(16.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "Result Distribution",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "Mean: $resultMean")
+                    Text(text = "Std Dev: $resultStdDev")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun DistributionInput(
+    title: String,
+    mean: String,
+    stdDev: String,
+    onMeanChange: (String) -> Unit,
+    onStdDevChange: (String) -> Unit,
+    onMeanFocus: () -> Unit,
+    onStdDevFocus: () -> Unit,
+    currentField: String
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+            .padding(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = title,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-								Box(
-										modifier = Modifier
-												.height(100.dp)
-												.background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
-												.padding(16.dp),
-										contentAlignment = Alignment.CenterEnd
-								) {
-										Text(
-												text = input1.toString(),
-												fontSize = 40.sp,
-												fontWeight = FontWeight.Bold,
-												textAlign = TextAlign.End,
-												maxLines = 1
-										)
-								}
-								Box(
-										modifier = Modifier
-												.height(100.dp)
-												.background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
-												.padding(16.dp),
-										contentAlignment = Alignment.CenterEnd
-								) {
-										Text(
-												text = input2.toString(),
-												fontSize = 40.sp,
-												fontWeight = FontWeight.Bold,
-												textAlign = TextAlign.End,
-												maxLines = 1
-										)
-								}
+                // Mean input with highlight when selected
+                OutlinedTextField(
+                    value = mean,
+                    onValueChange = onMeanChange,
+                    label = { Text("Mean") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 4.dp)
+                        .clickable { onMeanFocus() }
+                        .border(
+                            width = if (currentField == "mean1" && title == "Distribution 1" || 
+                                       currentField == "mean2" && title == "Distribution 2") 3.dp else 0.dp,
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(4.dp)
+                        ),
+                    colors = if (currentField == "mean1" && title == "Distribution 1" || 
+                               currentField == "mean2" && title == "Distribution 2") 
+                        androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+                            focusedLabelColor = MaterialTheme.colorScheme.primary,
+                            unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                            focusedContainerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+                            unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                        ) else androidx.compose.material3.OutlinedTextFieldDefaults.colors()
+                )
+                
+                // Standard Deviation input with highlight when selected
+                OutlinedTextField(
+                    value = stdDev,
+                    onValueChange = onStdDevChange,
+                    label = { Text("Std Dev") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 4.dp)
+                        .clickable { onStdDevFocus() }
+                        .border(
+                            width = if (currentField == "stdDev1" && title == "Distribution 1" || 
+                                       currentField == "stdDev2" && title == "Distribution 2") 3.dp else 0.dp,
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(4.dp)
+                        ),
+                    colors = if (currentField == "stdDev1" && title == "Distribution 1" || 
+                               currentField == "stdDev2" && title == "Distribution 2") 
+                        androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+                            focusedLabelColor = MaterialTheme.colorScheme.primary,
+                            unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                            focusedContainerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+                            unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                        ) else androidx.compose.material3.OutlinedTextFieldDefaults.colors()
+                )
             }
-				}
+        }
+    }
+}
 
+@Composable
+fun OperationButton(
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .padding(4.dp)
+            .height(48.dp)
+            .width(48.dp),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Text(
+            text = text,
+            fontSize = 20.sp,
+            fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Bold
+        )
     }
 }
 
@@ -384,11 +456,11 @@ fun CalculatorButton(
     Button(
         onClick = onClick,
         modifier = modifier
-            .height(64.dp)
+            .height(56.dp)
     ) {
         Text(
             text = text,
-            fontSize = 24.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
     }
@@ -396,13 +468,13 @@ fun CalculatorButton(
 
 @Preview(showBackground = true)
 @Composable
-fun CalculatorPreview() {
+fun DistributionCalculatorPreview() {
     DistributionCalculatorTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            Calculator()
+            DistributionCalculator()
         }
     }
 }
