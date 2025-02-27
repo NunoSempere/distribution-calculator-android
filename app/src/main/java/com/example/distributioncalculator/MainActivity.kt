@@ -268,6 +268,22 @@ fun Calculator(modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.weight(1f))
             }
         }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp)
+                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+                .padding(16.dp),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            Text(
+                text = input,
+                fontSize = 40.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.End,
+                maxLines = 1
+            )
+        }
     }
 }
 
