@@ -9,11 +9,13 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,9 +34,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -50,6 +54,8 @@ import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.ln
 import kotlin.math.sqrt
+import kotlin.math.min
+import kotlin.math.max
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,9 +88,17 @@ fun Calculator(modifier: Modifier = Modifier) {
     var on_decimal_input by remember {mutableStateOf(0)}
     var on_decimal_level by remember {mutableStateOf(-1)}
 
-    /* Algebra */
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp
+    val screenHeight = configuration.screenHeightDp
+    
+    val basePadding = (min(screenWidth, screenHeight) * 0.04f).dp
+    val baseSpacing = (min(screenWidth, screenHeight) * 0.04f).dp
+    
+    val largeFontSize = max(min(screenWidth, screenHeight) * 0.06f, 20f).sp
+    val buttonFontSize = max(min(screenWidth, screenHeight) * 0.06f, 18f).sp
+
     fun calculateResult(): Distribution {
-        // Fake operation from now.
         val input = Distribution.Lognormal(low = input_field_low, high = input_field_high)
         val result = when (operation) {
             "×" -> MultiplyDists(input, output) 
@@ -227,328 +241,344 @@ fun Calculator(modifier: Modifier = Modifier) {
         on_decimal_input = 1
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(8.dp),
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        // Display
+    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
+        val availableHeight = maxHeight
+        val availableWidth = maxWidth
         
+        val outputBoxHeight = availableHeight * 0.12f
+        val inputBoxHeight = availableHeight * 0.12f
+
         Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(all = basePadding),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Output boxes with different style from inputs
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            Column(
+                verticalArrangement = Arrangement.spacedBy(baseSpacing)
             ) {
-                Box(
-                    modifier = Modifier
-                        .height(80.dp)
-                        .weight(1f)
-                        .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
-                        .padding(12.dp),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    Text(
-                        text = toPrettyString(output_tag_low),
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.End,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        maxLines = 1
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .height(80.dp)
-                        .weight(1f)
-                        .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
-                        .padding(12.dp),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    Text(
-                        text = toPrettyString(output_tag_high),
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.End,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        maxLines = 1
-                    )
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Buttons
-        Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-
-            // First row - Multiplication operator alone
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                CalculatorButton(
-                    text = "×",
-                    onClick = { onOperationClick("×") },
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    buttonType = ButtonType.OPERATION
-                )
-            }
-
-            // Second row - Other operations
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                CalculatorButton(
-                    text = "+",
-                    onClick = { onOperationClick("+") },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.OPERATION
-                )
-                CalculatorButton(
-                    text = "÷",
-                    onClick = { onOperationClick("÷") },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.OPERATION
-                )
-                CalculatorButton(
-                    text = "-",
-                    onClick = { onOperationClick("-") },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.OPERATION
-                )
-            }
-
-			// Row with numbers 1-3
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                CalculatorButton(
-                    text = "1",
-                    onClick = { onNumberClick(1) },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.NUMBER
-                )
-                CalculatorButton(
-                    text = "2",
-                    onClick = { onNumberClick(2) },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.NUMBER
-                )
-                CalculatorButton(
-                    text = "3",
-                    onClick = { onNumberClick(3) },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.NUMBER
-                )
-            }
-
-            // Row with numbers 4-6
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                CalculatorButton(
-                    text = "4",
-                    onClick = { onNumberClick(4) },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.NUMBER
-                )
-                CalculatorButton(
-                    text = "5",
-                    onClick = { onNumberClick(5) },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.NUMBER
-                )
-                CalculatorButton(
-                    text = "6",
-                    onClick = { onNumberClick(6) },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.NUMBER
-                )
-            }
-            
-            // Row with numbers 7-9
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                CalculatorButton(
-                    text = "7",
-                    onClick = { onNumberClick(7) },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.NUMBER
-                )
-                CalculatorButton(
-                    text = "8",
-                    onClick = { onNumberClick(8) },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.NUMBER
-                )
-                CalculatorButton(
-                    text = "9",
-                    onClick = { onNumberClick(9) },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.NUMBER
-                )
-            }
-
-            // Row with decimal and 0
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                CalculatorButton(
-                    text = "↻",
-                    onClick = { onRestartClick() },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.COMMAND
-                )
-                CalculatorButton(
-                    text = "0",
-                    onClick = { onNumberClick(0) },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.NUMBER
-                )
-                CalculatorButton(
-                    text = ".",
-                    onClick = { onDecimalClick() },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.NUMBER
-                )
-            }
-
-			// Special ops row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                CalculatorButton(
-                    text = "Clear",
-                    onClick = { onClearClick() },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.COMMAND
-                )
-                CalculatorButton(
-                    text = "%",
-                    onClick = { onMultiplierClick("%") },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.UNIT
-                )
-            }
-
-			// Multiplier row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                CalculatorButton(
-                    text = "K",
-                    onClick = { onMultiplierClick("K") },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.UNIT
-                )
-                CalculatorButton(
-                    text = "M",
-                    onClick = { onMultiplierClick("M") },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.UNIT
-                )
-                CalculatorButton(
-                    text = "B",
-                    onClick = { onMultiplierClick("B") },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.UNIT
-                )
-                CalculatorButton(
-                    text = "T",
-                    onClick = { onMultiplierClick("T") },
-                    modifier = Modifier.weight(1f),
-                    buttonType = ButtonType.UNIT
-                )
-            }
-
-            
-            // Last row - Equals operator alone
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                CalculatorButton(
-                    text = "=",
-                    onClick = { onEqualsClick() },
-                    modifier = Modifier.fillMaxWidth(),
-                    buttonType = ButtonType.EQUAL
-                )
-            }
-        }
-
-        // Inputs
-        Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            // Input boxes with decorators to show which is selected
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .height(80.dp)
-                        .weight(1f)
-                        .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
-                        .border(
-                            width = if (selected_input == 0) 3.dp else 1.dp,
-                            color = if (selected_input == 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
-                            shape = RectangleShape
-                        )
-                        .clickable { selected_input = 0; on_decimal_input = 0; on_decimal_level = -1 }
-                        .padding(12.dp),
-                    contentAlignment = Alignment.CenterEnd
+                    horizontalArrangement = Arrangement.spacedBy(baseSpacing)
                 ) {
-                    Text(
-                        text = toPrettyString(input_field_low),
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.End,
-                        maxLines = 1
+                    Box(
+                        modifier = Modifier
+                            .height(height = outputBoxHeight)
+                            .weight(1f)
+                            .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
+                            .padding(all = basePadding),
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        Text(
+                            text = toPrettyString(output_tag_low),
+                            fontSize = largeFontSize,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.End,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            maxLines = 1
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .height(height = outputBoxHeight)
+                            .weight(1f)
+                            .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
+                            .padding(all = basePadding),
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        Text(
+                            text = toPrettyString(output_tag_high),
+                            fontSize = largeFontSize,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.End,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            maxLines = 1
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(height = baseSpacing))
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(baseSpacing)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    horizontalArrangement = Arrangement.spacedBy(baseSpacing)
+                ) {
+                    ResponsiveCalculatorButton(
+                        text = "×",
+                        onClick = { onOperationClick("×") },
+                        modifier = Modifier.fillMaxWidth().weight(1f),
+                        buttonType = ButtonType.OPERATION,
+                        fontSize = buttonFontSize
                     )
                 }
-                Box(
-                    modifier = Modifier
-                        .height(80.dp)
-                        .weight(1f)
-                        .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
-                        .border(
-                            width = if (selected_input == 1) 3.dp else 1.dp,
-                            color = if (selected_input == 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
-                            shape = RectangleShape
-                        )
-                        .clickable { selected_input = 1; on_decimal_input = 0; on_decimal_level = -1 }
-                        .padding(12.dp),
-                    contentAlignment = Alignment.CenterEnd
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    horizontalArrangement = Arrangement.spacedBy(baseSpacing)
                 ) {
-                    Text(
-                        text = toPrettyString(input_field_high),
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.End,
-                        maxLines = 1
+                    ResponsiveCalculatorButton(
+                        text = "+",
+                        onClick = { onOperationClick("+") },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.OPERATION,
+                        fontSize = buttonFontSize
                     )
+                    ResponsiveCalculatorButton(
+                        text = "÷",
+                        onClick = { onOperationClick("÷") },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.OPERATION,
+                        fontSize = buttonFontSize
+                    )
+                    ResponsiveCalculatorButton(
+                        text = "-",
+                        onClick = { onOperationClick("-") },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.OPERATION,
+                        fontSize = buttonFontSize
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    horizontalArrangement = Arrangement.spacedBy(baseSpacing)
+                ) {
+                    ResponsiveCalculatorButton(
+                        text = "1",
+                        onClick = { onNumberClick(1) },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.NUMBER,
+                        fontSize = buttonFontSize
+                    )
+                    ResponsiveCalculatorButton(
+                        text = "2",
+                        onClick = { onNumberClick(2) },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.NUMBER,
+                        fontSize = buttonFontSize
+                    )
+                    ResponsiveCalculatorButton(
+                        text = "3",
+                        onClick = { onNumberClick(3) },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.NUMBER,
+                        fontSize = buttonFontSize
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    horizontalArrangement = Arrangement.spacedBy(baseSpacing)
+                ) {
+                    ResponsiveCalculatorButton(
+                        text = "4",
+                        onClick = { onNumberClick(4) },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.NUMBER,
+                        fontSize = buttonFontSize
+                    )
+                    ResponsiveCalculatorButton(
+                        text = "5",
+                        onClick = { onNumberClick(5) },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.NUMBER,
+                        fontSize = buttonFontSize
+                    )
+                    ResponsiveCalculatorButton(
+                        text = "6",
+                        onClick = { onNumberClick(6) },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.NUMBER,
+                        fontSize = buttonFontSize
+                    )
+                }
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    horizontalArrangement = Arrangement.spacedBy(baseSpacing)
+                ) {
+                    ResponsiveCalculatorButton(
+                        text = "7",
+                        onClick = { onNumberClick(7) },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.NUMBER,
+                        fontSize = buttonFontSize
+                    )
+                    ResponsiveCalculatorButton(
+                        text = "8",
+                        onClick = { onNumberClick(8) },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.NUMBER,
+                        fontSize = buttonFontSize
+                    )
+                    ResponsiveCalculatorButton(
+                        text = "9",
+                        onClick = { onNumberClick(9) },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.NUMBER,
+                        fontSize = buttonFontSize
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    horizontalArrangement = Arrangement.spacedBy(baseSpacing)
+                ) {
+                    ResponsiveCalculatorButton(
+                        text = "↻",
+                        onClick = { onRestartClick() },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.COMMAND,
+                        fontSize = buttonFontSize
+                    )
+                    ResponsiveCalculatorButton(
+                        text = "0",
+                        onClick = { onNumberClick(0) },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.NUMBER,
+                        fontSize = buttonFontSize
+                    )
+                    ResponsiveCalculatorButton(
+                        text = ".",
+                        onClick = { onDecimalClick() },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.NUMBER,
+                        fontSize = buttonFontSize
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    horizontalArrangement = Arrangement.spacedBy(baseSpacing)
+                ) {
+                    ResponsiveCalculatorButton(
+                        text = "Clear",
+                        onClick = { onClearClick() },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.COMMAND,
+                        fontSize = buttonFontSize
+                    )
+                    ResponsiveCalculatorButton(
+                        text = "%",
+                        onClick = { onMultiplierClick("%") },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.UNIT,
+                        fontSize = buttonFontSize
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    horizontalArrangement = Arrangement.spacedBy(baseSpacing)
+                ) {
+                    ResponsiveCalculatorButton(
+                        text = "K",
+                        onClick = { onMultiplierClick("K") },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.UNIT,
+                        fontSize = buttonFontSize
+                    )
+                    ResponsiveCalculatorButton(
+                        text = "M",
+                        onClick = { onMultiplierClick("M") },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.UNIT,
+                        fontSize = buttonFontSize
+                    )
+                    ResponsiveCalculatorButton(
+                        text = "B",
+                        onClick = { onMultiplierClick("B") },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.UNIT,
+                        fontSize = buttonFontSize
+                    )
+                    ResponsiveCalculatorButton(
+                        text = "T",
+                        onClick = { onMultiplierClick("T") },
+                        modifier = Modifier.weight(1f),
+                        buttonType = ButtonType.UNIT,
+                        fontSize = buttonFontSize
+                    )
+                }
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    horizontalArrangement = Arrangement.spacedBy(baseSpacing)
+                ) {
+                    ResponsiveCalculatorButton(
+                        text = "=",
+                        onClick = { onEqualsClick() },
+                        modifier = Modifier.fillMaxWidth(),
+                        buttonType = ButtonType.EQUAL,
+                        fontSize = buttonFontSize
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(height = baseSpacing))
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(baseSpacing)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(baseSpacing)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .height(height = inputBoxHeight)
+                            .weight(1f)
+                            .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
+                            .border(
+                                width = if (selected_input == 0) 3.dp else 1.dp,
+                                color = if (selected_input == 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                                shape = RectangleShape
+                            )
+                            .clickable { selected_input = 0; on_decimal_input = 0; on_decimal_level = -1 }
+                            .padding(all = basePadding),
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        Text(
+                            text = toPrettyString(input_field_low),
+                            fontSize = largeFontSize,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.End,
+                            maxLines = 1
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .height(height = inputBoxHeight)
+                            .weight(1f)
+                            .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
+                            .border(
+                                width = if (selected_input == 1) 3.dp else 1.dp,
+                                color = if (selected_input == 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                                shape = RectangleShape
+                            )
+                            .clickable { selected_input = 1; on_decimal_input = 0; on_decimal_level = -1 }
+                            .padding(all = basePadding),
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        Text(
+                            text = toPrettyString(input_field_high),
+                            fontSize = largeFontSize,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.End,
+                            maxLines = 1
+                        )
+                    }
                 }
             }
         }
     }
 }
 
-// Enum to categorize button types
 enum class ButtonType {
     OPERATION,
     NUMBER,
@@ -558,13 +588,13 @@ enum class ButtonType {
 }
 
 @Composable
-fun CalculatorButton(
+fun ResponsiveCalculatorButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    buttonType: ButtonType = ButtonType.NUMBER
+    buttonType: ButtonType = ButtonType.NUMBER,
+    fontSize: androidx.compose.ui.unit.TextUnit = 20.sp
 ) {
-    // Choose color based on button type
     val buttonColor = when (buttonType) {
         ButtonType.OPERATION -> OperationColor
         ButtonType.NUMBER -> NumberColor
@@ -575,8 +605,7 @@ fun CalculatorButton(
     
     Button(
         onClick = onClick,
-        modifier = modifier
-            .height(48.dp),
+        modifier = modifier,
         shape = RectangleShape,
         colors = ButtonDefaults.buttonColors(
             containerColor = buttonColor
@@ -584,10 +613,27 @@ fun CalculatorButton(
     ) {
         Text(
             text = text,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
+            fontSize = fontSize,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            maxLines = 1
         )
     }
+}
+
+@Composable
+fun CalculatorButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    buttonType: ButtonType = ButtonType.NUMBER
+) {
+    ResponsiveCalculatorButton(
+        text = text,
+        onClick = onClick,
+        modifier = modifier,
+        buttonType = buttonType
+    )
 }
 
 @Preview(showBackground = true)
