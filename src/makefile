@@ -26,6 +26,9 @@ help:
 build:
 	$(GRADLE) assembleDebug 
 
+build-no-cache:
+	$(GRADLE) build --no-build-cache
+
 # Install the debug APK on a connected device
 .PHONY: install
 install:

@@ -105,7 +105,7 @@ fun Calculator(modifier: Modifier = Modifier) {
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    func throwSnackbar(error_msg: String){
+    fun throwSnackbar(error_msg: String) {
             coroutineScope.launch {
                 snackbarHostState.showSnackbar(error_msg)
             }
@@ -261,14 +261,14 @@ fun Calculator(modifier: Modifier = Modifier) {
 
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val availableHeight = maxHeight
-        val availableWidth = maxWidth
+        // val availableWidth = maxWidth
         
         val outputBoxHeight = availableHeight * 0.12f
         val inputBoxHeight = availableHeight * 0.12f
 
         Scaffold(
             snackbarHost = { SnackbarHost(snackbarHostState) }
-        ) { innerPadding ->
+        ) { 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
