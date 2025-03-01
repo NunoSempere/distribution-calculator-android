@@ -92,9 +92,6 @@ fun Calculator(modifier: Modifier = Modifier) {
     var on_decimal_input by remember {mutableStateOf(0)}
     var on_decimal_level by remember {mutableStateOf(-1)}
 
-    val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
-
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
     val screenHeight = configuration.screenHeightDp
@@ -104,6 +101,15 @@ fun Calculator(modifier: Modifier = Modifier) {
     
     val largeFontSize = max(min(screenWidth, screenHeight) * 0.06f, 20f).sp
     val buttonFontSize = max(min(screenWidth, screenHeight) * 0.06f, 18f).sp
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    func throwSnackbar(error_msg: String){
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(error_msg)
+            }
+    }
 
     fun calculateResult(): Distribution {
         val input = Distribution.Lognormal(low = input_field_low, high = input_field_high)
@@ -199,9 +205,7 @@ fun Calculator(modifier: Modifier = Modifier) {
 
     fun onEqualsClick() {
         if (input_field_low > input_field_high) {
-            coroutineScope.launch {
-                snackbarHostState.showSnackbar("Error: Low value cannot be greater than high value")
-            }
+            throwSnackbar("Error, first field must be lower than second")
             return
         }
         
