@@ -24,7 +24,7 @@ help:
 # Build the debug APK
 .PHONY: build
 build:
-	$(GRADLE) assembleDebug 
+	$(GRADLE) assembleDebug  --warning-mode all
 
 build-no-cache:
 	$(GRADLE) build --no-build-cache
