@@ -105,7 +105,7 @@ fun Calculator(modifier: Modifier = Modifier) {
     
     val largeFontSize = max(min(screenWidth, screenHeight) * 0.06f, 20f).sp
     val buttonFontSize = max(min(screenWidth, screenHeight) * 0.06f, 18f).sp
-    val snackbarFontSize = max(min(screenWidth, screenHeight) * 0.06f, 18f).sp
+    val snackbarFontSize = max(min(screenWidth, screenHeight) * 0.05f, 16f).sp
 
     fun calculateResult(): Distribution {
         val input = Distribution.Lognormal(low = input_field_low, high = input_field_high)
