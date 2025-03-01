@@ -120,7 +120,7 @@ fun Calculator(modifier: Modifier = Modifier) {
             "÷" -> DivideDists(input, output)
             "+" -> SumDists(input, output)
             "-" -> SubstractDists(input, output)
-            else -> throw IllegalStateException("Unsupported operation type")
+            else -> Distribution.Err("Unsupported operation type")
         }
         return result
     }
@@ -209,6 +209,12 @@ fun Calculator(modifier: Modifier = Modifier) {
         if (input_field_low > input_field_high) {
             throwSnackbar("Error: first field must be lower than second")
             return
+        } else if (input_field_low == 0.0) {
+            throwSnackbar("Error: first field can't be zero yet. If this is important to you, tell Nuño")
+            return
+        } else if (input_field_high == 0.0 ){
+            throwSnackbar("Error: second field can't be zero yet. If this is important to you, tell Nuño")
+            return
         }
         
         val result = calculateResult()
@@ -216,6 +222,7 @@ fun Calculator(modifier: Modifier = Modifier) {
             is Distribution.Lognormal -> {
                 output_tag_low = result.low
                 output_tag_high = result.high
+
                 output = result
             }
             is Distribution.SamplesArray -> {
@@ -223,6 +230,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                 xs.sort()
                 output_tag_low = xs[5_000]
                 output_tag_high = xs[95_000]
+
                 output = result
             }
             is Distribution.Err -> {
