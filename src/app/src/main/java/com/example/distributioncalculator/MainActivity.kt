@@ -27,6 +27,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.SnackbarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -101,6 +102,7 @@ fun Calculator(modifier: Modifier = Modifier) {
     
     val largeFontSize = max(min(screenWidth, screenHeight) * 0.06f, 20f).sp
     val buttonFontSize = max(min(screenWidth, screenHeight) * 0.06f, 18f).sp
+    val snackbarFontSize = max(min(screenWidth, screenHeight) * 0.05f, 16f).sp
 
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -205,7 +207,7 @@ fun Calculator(modifier: Modifier = Modifier) {
 
     fun onEqualsClick() {
         if (input_field_low > input_field_high) {
-            throwSnackbar("Error, first field must be lower than second")
+            throwSnackbar("Error: first field must be lower than second")
             return
         }
         
@@ -214,15 +216,19 @@ fun Calculator(modifier: Modifier = Modifier) {
             is Distribution.Lognormal -> {
                 output_tag_low = result.low
                 output_tag_high = result.high
+                output = result
             }
             is Distribution.SamplesArray -> {
-                val result_copy = (result.samples).copyOf()
-                result_copy.sort()
-                output_tag_low = result_copy[5_000]
-                output_tag_high = result_copy[95_000]
+                val xs = (result.samples).copyOf()
+                xs.sort()
+                output_tag_low = xs[5_000]
+                output_tag_high = xs[95_000]
+                output = result
+            }
+            is Distribution.Err -> {
+                throwSnackbar(result.msg)
             }
         }
-        output = result
 
         input_field_low = 0.0
         input_field_high = 0.0
@@ -267,7 +273,23 @@ fun Calculator(modifier: Modifier = Modifier) {
         val inputBoxHeight = availableHeight * 0.12f
 
         Scaffold(
-            snackbarHost = { SnackbarHost(snackbarHostState) }
+            snackbarHost = { 
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                    modifier = Modifier.padding(16.dp)
+                ) { data ->
+                    androidx.compose.material3.Snackbar(
+                        modifier = Modifier.padding(16.dp),
+                        containerColor = SnackbarDefaults.color,
+                        contentColor = SnackbarDefaults.contentColor
+                    ) {
+                        Text(
+                            text = data.visuals.message,
+                            fontSize = snackbarFontSize,
+                        )
+                    }
+                }
+            }
         ) { 
             Column(
                 modifier = Modifier

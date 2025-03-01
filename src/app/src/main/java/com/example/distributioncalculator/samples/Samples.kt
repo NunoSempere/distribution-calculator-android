@@ -24,6 +24,9 @@ fun SampleNormalFrom90CI(low: Double, high: Double): Double {
 }
 
 fun SampleTo(low: Double, high: Double): Double {
+  if (low == high) {
+    return low
+  }
   val loglow = ln(low)
   val loghigh = ln(high)
   val result = exp(SampleNormalFrom90CI(loglow, loghigh))
@@ -35,6 +38,7 @@ fun SampleTo(low: Double, high: Double): Double {
 sealed class Distribution {
     data class Lognormal(val low: Double, val high: Double) : Distribution()
     data class SamplesArray(val samples: DoubleArray) : Distribution()
+    data class Err(val msg: String): Distribution()
 }
 
 fun lognormalToSamples(l: Distribution.Lognormal): Distribution.SamplesArray {
@@ -77,6 +81,8 @@ fun MultiplyDists(d1: Distribution, d2: Distribution): Distribution {
     d1 is Distribution.Lognormal && d2 is Distribution.SamplesArray -> multiplySamplesArray(lognormalToSamples(d1), d2)
     d1 is Distribution.SamplesArray && d2 is Distribution.Lognormal -> multiplySamplesArray(d1, lognormalToSamples(d2))
     d1 is Distribution.SamplesArray && d2 is Distribution.SamplesArray -> multiplySamplesArray(d1, d2)
+    d1 is Distribution.Err -> d1
+    d2 is Distribution.Err -> d2
     else -> throw IllegalArgumentException("Unsupported distribution types") // TODO: how to catch this? 
   }
 }
@@ -84,15 +90,25 @@ fun MultiplyDists(d1: Distribution, d2: Distribution): Distribution {
 
 // Division
 
-fun divideLogDists(l1: Distribution.Lognormal, l2: Distribution.Lognormal): Distribution.Lognormal {
+fun divideLogDists(l1: Distribution.Lognormal, l2: Distribution.Lognormal): Distribution {
+  if (l2.low == 0.0 ) {
+    return Distribution.Err("Error: Division by zero when trying to divide by low parameter of lognormal")
+  } else if (l2.high == 0.0 ) {
+    return Distribution.Err("Error: Division by zero when trying to divide by high parameter of lognormal")
+  }
   var inverse = Distribution.Lognormal(low = 1.0 / l2.high, high = 1.0/l2.low)
-	return multiplyLogDists(l1, l2)
-	// TODO: case where divide by zero
+	return multiplyLogDists(l1, inverse)
 }
 
 
-fun divideSamplesArray(xs: Distribution.SamplesArray, ys: Distribution.SamplesArray): Distribution.SamplesArray {
+fun divideSamplesArray(xs: Distribution.SamplesArray, ys: Distribution.SamplesArray): Distribution {
   val zs = DoubleArray(xs.samples.size)
+
+  for (i in ys.samples.indices){
+    if (ys.samples[i] == 0.0){
+      return Distribution.Err("Trying to divide by zero when dividing sample distributions")
+    }
+  }
 
   for (i in xs.samples.indices) {
       zs[i] = xs.samples[i] / ys.samples[i]
@@ -106,6 +122,8 @@ fun DivideDists(d1: Distribution, d2: Distribution): Distribution {
     d1 is Distribution.Lognormal && d2 is Distribution.SamplesArray -> divideSamplesArray(lognormalToSamples(d1), d2)
     d1 is Distribution.SamplesArray && d2 is Distribution.Lognormal -> divideSamplesArray(d1, lognormalToSamples(d2))
     d1 is Distribution.SamplesArray && d2 is Distribution.SamplesArray -> divideSamplesArray(d1, d2)
+    d1 is Distribution.Err -> d1
+    d2 is Distribution.Err -> d2
     else -> throw IllegalArgumentException("Unsupported distribution types") // TODO: how to catch this? 
   }
 }
@@ -126,6 +144,8 @@ fun SumDists(d1: Distribution, d2: Distribution): Distribution {
     d1 is Distribution.Lognormal && d2 is Distribution.SamplesArray -> sumSamplesArray(lognormalToSamples(d1), d2)
     d1 is Distribution.SamplesArray && d2 is Distribution.Lognormal -> sumSamplesArray(d1, lognormalToSamples(d2))
     d1 is Distribution.SamplesArray && d2 is Distribution.SamplesArray -> sumSamplesArray(d1, d2)
+    d1 is Distribution.Err -> d1
+    d2 is Distribution.Err -> d2
     else -> throw IllegalArgumentException("Unsupported distribution types") // TODO: how to catch this? 
   }
 }
@@ -147,6 +167,8 @@ fun SubstractDists(d1: Distribution, d2: Distribution): Distribution {
     d1 is Distribution.Lognormal && d2 is Distribution.SamplesArray -> substractSamplesArray(lognormalToSamples(d1), d2)
     d1 is Distribution.SamplesArray && d2 is Distribution.Lognormal -> substractSamplesArray(d1, lognormalToSamples(d2))
     d1 is Distribution.SamplesArray && d2 is Distribution.SamplesArray -> substractSamplesArray(d1, d2)
+    d1 is Distribution.Err -> d1
+    d2 is Distribution.Err -> d2
     else -> throw IllegalArgumentException("Unsupported distribution types") // TODO: how to catch this? 
   }
 }
