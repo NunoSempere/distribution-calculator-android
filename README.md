@@ -28,7 +28,12 @@ Distributed with the MIT license, see LICENSE.txt
 
 ### v0.0.2
 
-- [ ] More thorough error checking
+- [x] More thorough error checking
+- [ ] Export calculations?
+- [ ] Add beta distribution?
+- [ ] Just use for a while.
+- [ ] Add to F-Droid?
+  - [ ] <https://f-droid.org/docs/Submitting_to_F-Droid_Quick_Start_Guide/>
 
 ### Public v0.0.1
 
@@ -38,7 +43,6 @@ Distributed with the MIT license, see LICENSE.txt
 - [x] Think how to deliver it.
   - [x] Github? 
   - Own webpage
-  - F-Droid? <= could be a good way 
 
 ### MVP 
 
