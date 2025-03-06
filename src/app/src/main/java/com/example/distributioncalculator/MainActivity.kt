@@ -35,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -64,6 +65,7 @@ import kotlin.math.sqrt
 import kotlin.math.min
 import kotlin.math.max
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,6 +97,8 @@ fun Calculator(modifier: Modifier = Modifier) {
     var selected_input by remember { mutableStateOf(0) }
     var on_decimal_input by remember {mutableStateOf(0)}
     var on_decimal_level by remember {mutableStateOf(-1)}
+    
+    var isSwipeProcessing by remember { mutableStateOf(false) }
 
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
@@ -279,16 +283,28 @@ fun Calculator(modifier: Modifier = Modifier) {
     }
 
     fun handleSwipe(direction: SwipeDirection) {
-        when (direction) {
-            SwipeDirection.LEFT -> {
-                // Handle left swipe
-                throwSnackbar("Swiped left")
-                // Additional actions for left swipe can be added here
+        if (!isSwipeProcessing) {
+            isSwipeProcessing = true
+            
+            when (direction) {
+                SwipeDirection.LEFT -> {
+                    input_field_low = input_field_high
+                    // Handle left swipe
+                    // throwSnackbar("Swiped left")
+                    // Additional actions for left swipe can be added here
+                }
+                SwipeDirection.RIGHT -> {
+                    input_field_high = input_field_low
+                    // Handle right swipe
+                    // throwSnackbar("Swiped right")
+                    // Additional actions for right swipe can be added here
+                }
             }
-            SwipeDirection.RIGHT -> {
-                // Handle right swipe
-                throwSnackbar("Swiped right")
-                // Additional actions for right swipe can be added here
+            
+            // Reset the processing flag after a delay
+            coroutineScope.launch {
+                delay(500) // 500ms debounce time
+                isSwipeProcessing = false
             }
         }
     }
@@ -602,12 +618,25 @@ fun Calculator(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .pointerInput(Unit) {
-                            detectHorizontalDragGestures { _, dragAmount ->
-                                when {
-                                    dragAmount < -10 -> handleSwipe(SwipeDirection.LEFT)
-                                    dragAmount > 10 -> handleSwipe(SwipeDirection.RIGHT)
+                            detectHorizontalDragGestures(
+                                onDragEnd = {
+                                    // Reset processing flag when drag ends
+                                    isSwipeProcessing = false
+                                },
+                                onDragCancel = {
+                                    // Reset processing flag when drag is canceled
+                                    isSwipeProcessing = false
+                                },
+                                onHorizontalDrag = { _, dragAmount ->
+                                    // Only process significant drags and use a threshold
+                                    if (abs(dragAmount) > 20) {
+                                        when {
+                                            dragAmount < 0 -> handleSwipe(SwipeDirection.LEFT)
+                                            dragAmount > 0 -> handleSwipe(SwipeDirection.RIGHT)
+                                        }
+                                    }
                                 }
-                            }
+                            )
                         },
                     horizontalArrangement = Arrangement.spacedBy(baseSpacing)
                 ) {

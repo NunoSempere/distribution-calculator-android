@@ -29,12 +29,12 @@ Distributed with the MIT license, see LICENSE.txt
 ### v0.0.2
 
 - [x] More thorough error checking
-- [ ] Export calculations?
-- [ ] Add beta distribution?
 - [ ] Just use for a while.
   - [x] Fixed op order
-  - [ ] Highlight selected operation
-  - [ ] Some way to duplicate inputs
+  - [x] Highlight selected operation
+  - [x] Some way to duplicate inputs => swipe
+- [ ] Export calculations?
+- [ ] Add beta distribution?
 - [ ] Add to F-Droid?
   - <https://f-droid.org/docs/Submitting_to_F-Droid_Quick_Start_Guide/>, <https://f-droid.org/docs/Inclusion_How-To/#Proposal_by_Metadata_Merge_Request>. Would take a few hours of concentration.
 
