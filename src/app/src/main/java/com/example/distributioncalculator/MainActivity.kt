@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -38,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -274,6 +276,21 @@ fun Calculator(modifier: Modifier = Modifier) {
 
     fun onDecimalClick() {
         on_decimal_input = 1
+    }
+
+    fun handleSwipe(direction: SwipeDirection) {
+        when (direction) {
+            SwipeDirection.LEFT -> {
+                // Handle left swipe
+                throwSnackbar("Swiped left")
+                // Additional actions for left swipe can be added here
+            }
+            SwipeDirection.RIGHT -> {
+                // Handle right swipe
+                throwSnackbar("Swiped right")
+                // Additional actions for right swipe can be added here
+            }
+        }
     }
 
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
@@ -580,57 +597,63 @@ fun Calculator(modifier: Modifier = Modifier) {
 
                 Spacer(modifier = Modifier.height(height = baseSpacing))
 
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(baseSpacing)
+                // Input fields row with swipe detection
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .pointerInput(Unit) {
+                            detectHorizontalDragGestures { _, dragAmount ->
+                                when {
+                                    dragAmount < -10 -> handleSwipe(SwipeDirection.LEFT)
+                                    dragAmount > 10 -> handleSwipe(SwipeDirection.RIGHT)
+                                }
+                            }
+                        },
+                    horizontalArrangement = Arrangement.spacedBy(baseSpacing)
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(baseSpacing)
+                    Box(
+                        modifier = Modifier
+                            .height(height = inputBoxHeight)
+                            .weight(1f)
+                            .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
+                            .border(
+                                width = if (selected_input == 0) 3.dp else 1.dp,
+                                color = if (selected_input == 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                                shape = RectangleShape
+                            )
+                            .clickable { selected_input = 0; on_decimal_input = 0; on_decimal_level = -1 }
+                            .padding(all = basePadding),
+                        contentAlignment = Alignment.CenterEnd
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .height(height = inputBoxHeight)
-                                .weight(1f)
-                                .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
-                                .border(
-                                    width = if (selected_input == 0) 3.dp else 1.dp,
-                                    color = if (selected_input == 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
-                                    shape = RectangleShape
-                                )
-                                .clickable { selected_input = 0; on_decimal_input = 0; on_decimal_level = -1 }
-                                .padding(all = basePadding),
-                            contentAlignment = Alignment.CenterEnd
-                        ) {
-                            Text(
-                                text = toPrettyString(input_field_low),
-                                fontSize = largeFontSize,
-                                fontWeight = FontWeight.Bold,
-                                textAlign = TextAlign.End,
-                                maxLines = 1
+                        Text(
+                            text = toPrettyString(input_field_low),
+                            fontSize = largeFontSize,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.End,
+                            maxLines = 1
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .height(height = inputBoxHeight)
+                            .weight(1f)
+                            .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
+                            .border(
+                                width = if (selected_input == 1) 3.dp else 1.dp,
+                                color = if (selected_input == 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                                shape = RectangleShape
                             )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .height(height = inputBoxHeight)
-                                .weight(1f)
-                                .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
-                                .border(
-                                    width = if (selected_input == 1) 3.dp else 1.dp,
-                                    color = if (selected_input == 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
-                                    shape = RectangleShape
-                                )
-                                .clickable { selected_input = 1; on_decimal_input = 0; on_decimal_level = -1 }
-                                .padding(all = basePadding),
-                            contentAlignment = Alignment.CenterEnd
-                        ) {
-                            Text(
-                                text = toPrettyString(input_field_high),
-                                fontSize = largeFontSize,
-                                fontWeight = FontWeight.Bold,
-                                textAlign = TextAlign.End,
-                                maxLines = 1
-                            )
-                        }
+                            .clickable { selected_input = 1; on_decimal_input = 0; on_decimal_level = -1 }
+                            .padding(all = basePadding),
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        Text(
+                            text = toPrettyString(input_field_high),
+                            fontSize = largeFontSize,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.End,
+                            maxLines = 1
+                        )
                     }
                 }
             }
@@ -644,6 +667,11 @@ enum class ButtonType {
     UNIT,
     COMMAND,
     EQUAL
+}
+
+enum class SwipeDirection {
+    LEFT,
+    RIGHT
 }
 
 @Composable
