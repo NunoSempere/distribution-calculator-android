@@ -1,0 +1,6 @@
+Changes after using it in real life for a bit:
+
+
+- Fixed op order for division and substraction
+- Highlight selected operation
+- Swipe to duplicate inputs 
