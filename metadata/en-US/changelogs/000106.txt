@@ -1,0 +1,20 @@
+- Start adding changelogs per Fdroid instructions
+- Move changes to ROADMAP and changelog from README
+
+References for versionCode and versionName:
+https://developer.android.com/guide/topics/manifest/manifest-element
+android:versionCode="integer"
+android:versionName="string"
+
+Convention for versionCode and versionName:
+versionCode: 00 00 00 => major minor patch, as an integer
+versionName: 0.00.00 => 
+Similar to but not quite: https://semver.org/
+
+git tag format: v2.02.05
+https://git-scm.com/book/en/v2/Git-Basics-Tagging
+git tag -a "v2.02.05"
+
+F-Droid documentation
+https://f-droid.org/en/docs/Submitting_to_F-Droid_Quick_Start_Guide/
+https://gitlab.com/fdroid/fdroidclient/-/tree/master/metadata/en-US/changelogs
