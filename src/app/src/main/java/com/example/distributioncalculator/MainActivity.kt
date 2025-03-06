@@ -117,9 +117,9 @@ fun Calculator(modifier: Modifier = Modifier) {
         val input = Distribution.Lognormal(low = input_field_low, high = input_field_high)
         val result = when (operation) {
             "×" -> MultiplyDists(input, output) 
-            "÷" -> DivideDists(input, output)
+            "÷" -> DivideDists(output, input)
             "+" -> SumDists(input, output)
-            "-" -> SubstractDists(input, output)
+            "-" -> SubstractDists(output, input)
             else -> Distribution.Err("Unsupported operation type")
         }
         return result
@@ -176,6 +176,7 @@ fun Calculator(modifier: Modifier = Modifier) {
 
     fun onOperationClick(op: String) {
         operation = op
+        // throwSnackbar(op)
         on_decimal_input = 0
         on_decimal_level = -1
     }
@@ -217,6 +218,7 @@ fun Calculator(modifier: Modifier = Modifier) {
             return
         }
         
+        // throwSnackbar(operation)
         val result = calculateResult()
         when(result) {
             is Distribution.Lognormal -> {
