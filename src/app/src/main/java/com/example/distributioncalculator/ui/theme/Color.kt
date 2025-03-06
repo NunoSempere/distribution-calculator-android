@@ -12,6 +12,7 @@ val Pink40 = Color(0xFF7D5260)
 
 // Calculator button colors
 val OperationColor = Color(0xFF2196F3)  // Blue
+val OperationSelectedColor = Color(0xFF0D47A1)  // Darker Blue for selected operation
 val NumberColor = Color(0xFF4CAF50)     // Green
 val UnitColor = Color(0xFFFF9800)       // Orange
 val CommandColor = Color(0xFF9C27B0)    // Purple

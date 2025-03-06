@@ -51,6 +51,7 @@ import com.example.distributioncalculator.ui.theme.DistributionCalculatorTheme
 import com.example.distributioncalculator.ui.theme.EqualColor
 import com.example.distributioncalculator.ui.theme.NumberColor
 import com.example.distributioncalculator.ui.theme.OperationColor
+import com.example.distributioncalculator.ui.theme.OperationSelectedColor
 import com.example.distributioncalculator.ui.theme.UnitColor
 import com.example.distributioncalculator.samples.*
 
@@ -366,7 +367,8 @@ fun Calculator(modifier: Modifier = Modifier) {
                             onClick = { onOperationClick("×") },
                             modifier = Modifier.fillMaxWidth().weight(1f),
                             buttonType = ButtonType.OPERATION,
-                            fontSize = buttonFontSize
+                            fontSize = buttonFontSize,
+                            isSelected = operation == "×"
                         )
                     }
 
@@ -379,21 +381,24 @@ fun Calculator(modifier: Modifier = Modifier) {
                             onClick = { onOperationClick("+") },
                             modifier = Modifier.weight(1f),
                             buttonType = ButtonType.OPERATION,
-                            fontSize = buttonFontSize
+                            fontSize = buttonFontSize,
+                            isSelected = operation == "+"
                         )
                         ResponsiveCalculatorButton(
                             text = "÷",
                             onClick = { onOperationClick("÷") },
                             modifier = Modifier.weight(1f),
                             buttonType = ButtonType.OPERATION,
-                            fontSize = buttonFontSize
+                            fontSize = buttonFontSize,
+                            isSelected = operation == "÷"
                         )
                         ResponsiveCalculatorButton(
                             text = "-",
                             onClick = { onOperationClick("-") },
                             modifier = Modifier.weight(1f),
                             buttonType = ButtonType.OPERATION,
-                            fontSize = buttonFontSize
+                            fontSize = buttonFontSize,
+                            isSelected = operation == "-"
                         )
                     }
 
@@ -647,14 +652,17 @@ fun ResponsiveCalculatorButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     buttonType: ButtonType = ButtonType.NUMBER,
-    fontSize: androidx.compose.ui.unit.TextUnit = 20.sp
+    fontSize: androidx.compose.ui.unit.TextUnit = 20.sp,
+    isSelected: Boolean = false
 ) {
-    val buttonColor = when (buttonType) {
-        ButtonType.OPERATION -> OperationColor
-        ButtonType.NUMBER -> NumberColor
-        ButtonType.UNIT -> UnitColor
-        ButtonType.COMMAND -> CommandColor
-        ButtonType.EQUAL -> EqualColor
+    val buttonColor = when {
+        isSelected && buttonType == ButtonType.OPERATION -> OperationSelectedColor
+        buttonType == ButtonType.OPERATION -> OperationColor
+        buttonType == ButtonType.NUMBER -> NumberColor
+        buttonType == ButtonType.UNIT -> UnitColor
+        buttonType == ButtonType.COMMAND -> CommandColor
+        buttonType == ButtonType.EQUAL -> EqualColor
+        else -> NumberColor
     }
     
     Button(
@@ -670,7 +678,8 @@ fun ResponsiveCalculatorButton(
             fontSize = fontSize,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            maxLines = 1
+            maxLines = 1,
+            color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -680,13 +689,15 @@ fun CalculatorButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    buttonType: ButtonType = ButtonType.NUMBER
+    buttonType: ButtonType = ButtonType.NUMBER,
+    isSelected: Boolean = false
 ) {
     ResponsiveCalculatorButton(
         text = text,
         onClick = onClick,
         modifier = modifier,
-        buttonType = buttonType
+        buttonType = buttonType,
+        isSelected = isSelected
     )
 }
 
