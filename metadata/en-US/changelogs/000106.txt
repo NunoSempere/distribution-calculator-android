@@ -11,9 +11,9 @@ versionCode: 00 00 00 => major minor patch, as an integer
 versionName: 0.00.00 => 
 Similar to but not quite: https://semver.org/
 
-git tag format: v2.02.05
+git tag format: v2.02.5
 https://git-scm.com/book/en/v2/Git-Basics-Tagging
-git tag -a "v2.02.05"
+git tag -a "v2.02.5"
 
 F-Droid documentation
 https://f-droid.org/en/docs/Submitting_to_F-Droid_Quick_Start_Guide/
