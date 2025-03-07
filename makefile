@@ -92,8 +92,13 @@ edit:
 
 record:
 	adb shell screenrecord /sdcard/video.mp4
-	# adb pull /sdcard/video.mp4
-	# adb shell rm /sdcard/video.mp4
+	adb pull /sdcard/video.mp4
+	adb shell rm /sdcard/video.mp4
+
+screenshot:
+	adb shell screencap /sdcard/screenshot.png
+	adb pull /sdcard/screenshot.png
+	adb shell rm /sdcard/screenshot.png
 
 tags:
 	git fetch --tags

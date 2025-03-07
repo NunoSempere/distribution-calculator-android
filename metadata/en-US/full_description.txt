@@ -1,0 +1,1 @@
+A calculator that can deal with distributions ergonomically, to allow users to easily arrive at fermi estimates that incorporate uncertainty.

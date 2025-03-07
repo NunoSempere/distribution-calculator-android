@@ -12,6 +12,7 @@
 - [ ] Add to F-Droid?
   - <https://f-droid.org/en/docs/Submitting_to_F-Droid_Quick_Start_Guide/>, <https://f-droid.org/en/docs/Inclusion_How-To/#Proposal_by_Metadata_Merge_Request>. Would take a few hours of concentration.
   - [x] Start adding changelogs
+  - [x] Clean up tag name. Choose one of v0.01.6 or v0.02.01, but document consistently
 
 ## Public v0.0.1
 
