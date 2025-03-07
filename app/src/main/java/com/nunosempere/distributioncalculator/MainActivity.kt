@@ -1,4 +1,4 @@
-package com.example.distributioncalculator
+package com.nunosempere.distributioncalculator
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -35,33 +35,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-import com.example.distributioncalculator.ui.theme.CommandColor
-import com.example.distributioncalculator.ui.theme.DistributionCalculatorTheme
-import com.example.distributioncalculator.ui.theme.EqualColor
-import com.example.distributioncalculator.ui.theme.NumberColor
-import com.example.distributioncalculator.ui.theme.OperationColor
-import com.example.distributioncalculator.ui.theme.OperationSelectedColor
-import com.example.distributioncalculator.ui.theme.UnitColor
-import com.example.distributioncalculator.samples.*
+import com.nunosempere.distributioncalculator.ui.theme.CommandColor
+import com.nunosempere.distributioncalculator.ui.theme.DistributionCalculatorTheme
+import com.nunosempere.distributioncalculator.ui.theme.EqualColor
+import com.nunosempere.distributioncalculator.ui.theme.NumberColor
+import com.nunosempere.distributioncalculator.ui.theme.OperationColor
+import com.nunosempere.distributioncalculator.ui.theme.OperationSelectedColor
+import com.nunosempere.distributioncalculator.ui.theme.UnitColor
+import com.nunosempere.distributioncalculator.samples.*
 
 import kotlin.math.abs
 import kotlin.math.pow
-import kotlin.math.ln
-import kotlin.math.sqrt
 import kotlin.math.min
 import kotlin.math.max
 import kotlinx.coroutines.launch

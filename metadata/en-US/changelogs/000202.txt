@@ -1,0 +1,4 @@
+Continue towards building for F-Droid
+
+- rename namespace to com.nunosempere.distributioncalculator
+

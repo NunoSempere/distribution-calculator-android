@@ -1,4 +1,4 @@
-package com.example.distributioncalculator.ui.theme
+package com.nunosempere.distributioncalculator.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

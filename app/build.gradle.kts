@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.distributioncalculator"
+    namespace = "com.nunosempere.distributioncalculator"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.distributioncalculator"
+        applicationId = "com.nunosempere.distributioncalculator"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

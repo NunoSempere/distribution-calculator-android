@@ -1,4 +1,4 @@
-package com.example.distributioncalculator.samples
+package com.nunosempere.distributioncalculator.samples
 
 import kotlin.random.Random
 import kotlin.math.*

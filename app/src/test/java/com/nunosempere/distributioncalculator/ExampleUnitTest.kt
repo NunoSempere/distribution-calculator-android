@@ -1,4 +1,4 @@
-package com.example.distributioncalculator
+package com.nunosempere.distributioncalculator
 
 import org.junit.Test
 

@@ -3,7 +3,7 @@
 # Variables
 GRADLE = ./gradlew
 ADB = adb
-APP_ID = com.example.distributioncalculator
+APP_ID = com.nunosempere.distributioncalculator
 DEVICE = $(shell adb devices | grep -v devices | grep device | cut -f 1)
 
 # Default task
@@ -87,7 +87,7 @@ emu-start:
 	#
 
 edit:
-	nvim app/src/main/java/com/example/distributioncalculator/MainActivity.kt
+	nvim app/src/main/java/com/nunosempere/distributioncalculator/MainActivity.kt
 
 
 record:
