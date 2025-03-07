@@ -1,0 +1,7 @@
+Start testing on fserver
+
+Places where the version number needs to exist
+- build.gradle.kts
+- AdroidManifest
+- git tag
+- changelog
