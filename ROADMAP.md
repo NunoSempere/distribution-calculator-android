@@ -13,6 +13,11 @@
   - <https://f-droid.org/en/docs/Submitting_to_F-Droid_Quick_Start_Guide/>, <https://f-droid.org/en/docs/Inclusion_How-To/#Proposal_by_Metadata_Merge_Request>. Would take a few hours of concentration.
   - [x] Start adding changelogs
   - [x] Clean up tag name. Choose one of v0.01.6 or v0.02.01, but document consistently
+  - [x] Sent to Fdroid: <https://gitlab.com/fdroid/fdroiddata/-/merge_requests/20297>
+  - [ ] Add badge to readme? <https://f-droid.org/docs/Badges/.
+  - [ ] More on fastlane metadata: https://gitlab.com/-/snippets/1895688
+  - [ ] ~~Consider signing builds? <https://github.com/patrickfav/uber-apk-signer>, <https://stackoverflow.com/questions/10930331/how-to-sign-an-already-compiled-apk>~~
+  - [ ] Consider improving fdroid documentation. E.g., F-Droid itself doesn't have the full fastlane commands yet refers to it
 
 ## Public v0.0.1
 

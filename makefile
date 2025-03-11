@@ -102,3 +102,10 @@ screenshot:
 
 tags:
 	git fetch --tags
+
+version-places:
+	@echo - [ ] build.gradle.kts
+	@echo - [ ] AdroidManifest
+	@echo - [ ] git tag
+	@echo - [ ] changelog
+
