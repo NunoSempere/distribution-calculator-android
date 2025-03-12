@@ -356,7 +356,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                             Box(
                                 modifier = Modifier
                                     .align(Alignment.TopCenter)
-                                    .offset(y = (-25).dp)
+                                    .offset(y = (-25).dp, x = (-32).dp)
                                     // .zIndex(1f)
                             ) {
                                 PercentileIndicator(text = "5%")
