@@ -18,6 +18,8 @@
   - [ ] More on fastlane metadata: https://gitlab.com/-/snippets/1895688
   - [ ] ~~Consider signing builds? <https://github.com/patrickfav/uber-apk-signer>, <https://stackoverflow.com/questions/10930331/how-to-sign-an-already-compiled-apk>~~
   - [ ] Consider improving fdroid documentation. E.g., F-Droid itself doesn't have the full fastlane commands yet refers to it
+  - <https://monitor.f-droid.org/builds/running>
+- [ ] Add labels on outputs
 
 ## Public v0.0.1
 
