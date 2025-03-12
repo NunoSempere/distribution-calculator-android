@@ -46,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 
 import com.nunosempere.distributioncalculator.ui.theme.CommandColor
 import com.nunosempere.distributioncalculator.ui.theme.DistributionCalculatorTheme
@@ -356,8 +357,8 @@ fun Calculator(modifier: Modifier = Modifier) {
                             Box(
                                 modifier = Modifier
                                     .align(Alignment.TopCenter)
-                                    .offset(y = (-25).dp, x = (-32).dp)
-                                    // .zIndex(1f)
+                                    .offset(y = (-30).dp, x = (+32).dp)
+                                    .zIndex(1f)
                             ) {
                                 PercentileIndicator(text = "5%")
                             }
@@ -378,6 +379,14 @@ fun Calculator(modifier: Modifier = Modifier) {
                                 .padding(all = basePadding),
                             contentAlignment = Alignment.CenterEnd
                         ) {
+                            Box(
+                                modifier = Modifier
+                                    .align(Alignment.TopCenter)
+                                    .offset(y = (-30).dp, x = (+32).dp)
+                                    .zIndex(1f)
+                            ) {
+                                PercentileIndicator(text = "95%")
+                            }
                             Text(
                                 text = toPrettyString(output_tag_high),
                                 fontSize = largeFontSize,
@@ -659,6 +668,14 @@ fun Calculator(modifier: Modifier = Modifier) {
                             .padding(all = basePadding),
                         contentAlignment = Alignment.CenterEnd
                     ) {
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.TopCenter)
+                                .offset(y = (-30).dp, x = (+32).dp)
+                                .zIndex(1f)
+                        ) {
+                            PercentileIndicator(text = "5%")
+                        }
                         Text(
                             text = toPrettyString(input_field_low),
                             fontSize = largeFontSize,
@@ -678,9 +695,18 @@ fun Calculator(modifier: Modifier = Modifier) {
                                 shape = RectangleShape
                             )
                             .clickable { selected_input = 1; on_decimal_input = 0; on_decimal_level = -1 }
-                            .padding(all = basePadding),
+                            .padding(all = basePadding)
+                            .zIndex(2f),
                         contentAlignment = Alignment.CenterEnd
                     ) {
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.TopCenter)
+                                .offset(y = (-30).dp, x = (+32).dp)
+                                .zIndex(3f)
+                        ) {
+                            PercentileIndicator(text = "95%")
+                        }
                         Text(
                             text = toPrettyString(input_field_high),
                             fontSize = largeFontSize,
