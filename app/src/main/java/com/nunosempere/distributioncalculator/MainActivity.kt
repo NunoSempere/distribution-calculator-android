@@ -634,15 +634,12 @@ fun Calculator(modifier: Modifier = Modifier) {
                         .pointerInput(Unit) {
                             detectHorizontalDragGestures(
                                 onDragEnd = {
-                                    // Reset processing flag when drag ends
                                     isSwipeProcessing = false
                                 },
                                 onDragCancel = {
-                                    // Reset processing flag when drag is canceled
                                     isSwipeProcessing = false
                                 },
                                 onHorizontalDrag = { _, dragAmount ->
-                                    // Only process significant drags and use a threshold
                                     if (abs(dragAmount) > 20) {
                                         when {
                                             dragAmount < 0 -> handleSwipe(SwipeDirection.LEFT)
@@ -655,65 +652,74 @@ fun Calculator(modifier: Modifier = Modifier) {
                     horizontalArrangement = Arrangement.spacedBy(baseSpacing)
                 ) {
                     Box(
-                        modifier = Modifier
-                            .height(height = inputBoxHeight)
-                            .weight(1f)
-                            .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
-                            .border(
-                                width = if (selected_input == 0) 3.dp else 1.dp,
-                                color = if (selected_input == 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
-                                shape = RectangleShape
-                            )
-                            .clickable { selected_input = 0; on_decimal_input = 0; on_decimal_level = -1 }
-                            .padding(all = basePadding),
-                        contentAlignment = Alignment.CenterEnd
+                        modifier = Modifier.weight(1f)
                     ) {
                         Box(
                             modifier = Modifier
-                                .align(Alignment.TopCenter)
-                                .offset(y = (-30).dp, x = (+32).dp)
-                                .zIndex(1f)
+                                .height(height = inputBoxHeight)
+                                .fillMaxWidth()
+                                .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
+                                .border(
+                                    width = if (selected_input == 0) 3.dp else 1.dp,
+                                    color = if (selected_input == 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                                    shape = RectangleShape
+                                )
+                                .clickable { selected_input = 0; on_decimal_input = 0; on_decimal_level = -1 }
+                                .padding(all = basePadding)
+                                .zIndex(1f),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            Text(
+                                text = toPrettyString(input_field_low),
+                                fontSize = largeFontSize,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.End,
+                                maxLines = 1
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .offset(y = (+12).dp, x = (+32).dp)
+                                .zIndex(2f)
                         ) {
                             PercentileIndicator(text = "5%")
                         }
-                        Text(
-                            text = toPrettyString(input_field_low),
-                            fontSize = largeFontSize,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.End,
-                            maxLines = 1
-                        )
                     }
                     Box(
-                        modifier = Modifier
-                            .height(height = inputBoxHeight)
-                            .weight(1f)
-                            .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
-                            .border(
-                                width = if (selected_input == 1) 3.dp else 1.dp,
-                                color = if (selected_input == 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
-                                shape = RectangleShape
-                            )
-                            .clickable { selected_input = 1; on_decimal_input = 0; on_decimal_level = -1 }
-                            .padding(all = basePadding)
-                            .zIndex(2f),
-                        contentAlignment = Alignment.CenterEnd
+                        modifier = Modifier.weight(1f)
                     ) {
                         Box(
                             modifier = Modifier
-                                .align(Alignment.TopCenter)
-                                .offset(y = (-30).dp, x = (+32).dp)
-                                .zIndex(3f)
+                                .height(height = inputBoxHeight)
+                                .fillMaxWidth()
+                                .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
+                                .border(
+                                    width = if (selected_input == 1) 3.dp else 1.dp,
+                                    color = if (selected_input == 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                                    shape = RectangleShape
+                                )
+                                .clickable { selected_input = 1; on_decimal_input = 0; on_decimal_level = -1 }
+                                .padding(all = basePadding)
+                                .zIndex(1f),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            Text(
+                                text = toPrettyString(input_field_high),
+                                fontSize = largeFontSize,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.End,
+                                maxLines = 1
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .offset(y = (+12).dp, x = (+32).dp)
+                                .zIndex(2f)
                         ) {
                             PercentileIndicator(text = "95%")
                         }
-                        Text(
-                            text = toPrettyString(input_field_high),
-                            fontSize = largeFontSize,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.End,
-                            maxLines = 1
-                        )
                     }
                 }
             }
