@@ -360,7 +360,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                                     .offset(y = (-30).dp, x = (+32).dp)
                                     .zIndex(1f)
                             ) {
-                                PercentileIndicator(text = "5%")
+                                PercentileIndicator(text = "5%", blue = true)
                             }
                             Text(
                                 text = toPrettyString(output_tag_low),
@@ -385,7 +385,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                                     .offset(y = (-30).dp, x = (+32).dp)
                                     .zIndex(1f)
                             ) {
-                                PercentileIndicator(text = "95%")
+                                PercentileIndicator(text = "95%", blue = true)
                             }
                             Text(
                                 text = toPrettyString(output_tag_high),

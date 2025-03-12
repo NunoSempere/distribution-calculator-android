@@ -18,26 +18,27 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun PercentileIndicator(
     text: String,
+    blue: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
             .background(
-                MaterialTheme.colorScheme.primaryContainer,
+                if (blue) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
                 RoundedCornerShape(4.dp)
             )
-            .border(
+            /*.border(
                 2.dp,
                 Color.White,
                 RoundedCornerShape(4.dp)
-            )
+            )*/
             .padding(horizontal = 12.dp, vertical = 2.dp),
     ) {
         Text(
             text = text,
             fontSize = 16.sp,
             fontWeight = FontWeight.Normal,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
+            color = if (blue) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

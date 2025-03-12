@@ -19,7 +19,10 @@
   - [ ] ~~Consider signing builds? <https://github.com/patrickfav/uber-apk-signer>, <https://stackoverflow.com/questions/10930331/how-to-sign-an-already-compiled-apk>~~
   - [ ] Consider improving fdroid documentation. E.g., F-Droid itself doesn't have the full fastlane commands yet refers to it
   - <https://monitor.f-droid.org/builds/running>
-- [ ] Add labels on outputs
+- [x] Add labels on outputs
+  - [ ] Double check that these display well on screens of different sizes.
+  - [ ] Check with Jonathan?
+- [ ] Add distribution stats? Allow for exporting history? Some more ideas.
 
 ## Public v0.0.1
 
