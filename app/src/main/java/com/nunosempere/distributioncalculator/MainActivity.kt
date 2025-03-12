@@ -53,6 +53,7 @@ import com.nunosempere.distributioncalculator.ui.theme.NumberColor
 import com.nunosempere.distributioncalculator.ui.theme.OperationColor
 import com.nunosempere.distributioncalculator.ui.theme.OperationSelectedColor
 import com.nunosempere.distributioncalculator.ui.theme.UnitColor
+import com.nunosempere.distributioncalculator.ui.percentileindicator.*
 import com.nunosempere.distributioncalculator.samples.*
 
 import kotlin.math.abs
@@ -351,6 +352,14 @@ fun Calculator(modifier: Modifier = Modifier) {
                                 .padding(all = basePadding),
                             contentAlignment = Alignment.CenterEnd
                         ) {
+                            Box(
+                                modifier = Modifier
+                                    .align(Alignment.TopCenter)
+                                    // .offset(y = (-10).dp)
+                                    // .zIndex(1f)
+                            ) {
+                                PercentileIndicator(text = "5%")
+                            }
                             Text(
                                 text = toPrettyString(output_tag_low),
                                 fontSize = largeFontSize,
