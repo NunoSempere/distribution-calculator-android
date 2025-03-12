@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -31,7 +32,11 @@ fun PercentileIndicator(
                 RoundedCornerShape(4.dp)
             )
             .padding(horizontal = 8.dp, vertical = 2.dp),
-        contentAlignment = Alignment.Center
+        // contentAlignment = BiasAlignment(
+        //     horizontalBias = 0.5f,
+        //    verticalBias = 0f
+        // )
+        // Alignment.Center
     ) {
         Text(
             text = text,

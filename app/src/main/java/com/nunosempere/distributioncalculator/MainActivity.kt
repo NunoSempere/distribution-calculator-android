@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -355,7 +356,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                             Box(
                                 modifier = Modifier
                                     .align(Alignment.TopCenter)
-                                    // .offset(y = (-10).dp)
+                                    .offset(y = (-25).dp)
                                     // .zIndex(1f)
                             ) {
                                 PercentileIndicator(text = "5%")
