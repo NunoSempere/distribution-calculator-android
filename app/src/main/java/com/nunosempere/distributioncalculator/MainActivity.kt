@@ -55,6 +55,7 @@ import com.nunosempere.distributioncalculator.ui.theme.NumberColor
 import com.nunosempere.distributioncalculator.ui.theme.OperationColor
 import com.nunosempere.distributioncalculator.ui.theme.OperationSelectedColor
 import com.nunosempere.distributioncalculator.ui.theme.UnitColor
+import com.nunosempere.distributioncalculator.ui.theme.SurfaceVariantSelected
 import com.nunosempere.distributioncalculator.ui.percentileindicator.*
 import com.nunosempere.distributioncalculator.samples.*
 
@@ -658,11 +659,9 @@ fun Calculator(modifier: Modifier = Modifier) {
                             modifier = Modifier
                                 .height(height = inputBoxHeight)
                                 .fillMaxWidth()
-                                .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
-                                .border(
-                                    width = if (selected_input == 0) 3.dp else 1.dp,
-                                    color = if (selected_input == 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
-                                    shape = RectangleShape
+                                .background(
+                                    if (selected_input == 0) MaterialTheme.colorScheme.surfaceVariant else SurfaceVariantSelected,
+                                    RectangleShape
                                 )
                                 .clickable { selected_input = 0; on_decimal_input = 0; on_decimal_level = -1 }
                                 .padding(all = basePadding)
@@ -672,7 +671,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                             Text(
                                 text = toPrettyString(input_field_low),
                                 fontSize = largeFontSize,
-                                fontWeight = FontWeight.Bold,
+                                fontWeight = if (selected_input == 0) FontWeight.Bold else FontWeight.Normal,
                                 textAlign = TextAlign.End,
                                 maxLines = 1
                             )
@@ -683,7 +682,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                                 .offset(y = (+12).dp, x = (+32).dp)
                                 .zIndex(2f)
                         ) {
-                            PercentileIndicator(text = "5%")
+                            PercentileIndicator(text = "5%", selected_input = (selected_input == 0))
                         }
                     }
                     Box(
@@ -693,11 +692,9 @@ fun Calculator(modifier: Modifier = Modifier) {
                             modifier = Modifier
                                 .height(height = inputBoxHeight)
                                 .fillMaxWidth()
-                                .background(MaterialTheme.colorScheme.surfaceVariant, RectangleShape)
-                                .border(
-                                    width = if (selected_input == 1) 3.dp else 1.dp,
-                                    color = if (selected_input == 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
-                                    shape = RectangleShape
+                                .background(
+                                    if (selected_input == 1) MaterialTheme.colorScheme.surfaceVariant else SurfaceVariantSelected,
+                                    RectangleShape
                                 )
                                 .clickable { selected_input = 1; on_decimal_input = 0; on_decimal_level = -1 }
                                 .padding(all = basePadding)
@@ -707,7 +704,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                             Text(
                                 text = toPrettyString(input_field_high),
                                 fontSize = largeFontSize,
-                                fontWeight = FontWeight.Bold,
+                                fontWeight = if (selected_input == 1) FontWeight.Bold else FontWeight.Normal,
                                 textAlign = TextAlign.End,
                                 maxLines = 1
                             )
@@ -718,7 +715,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                                 .offset(y = (+12).dp, x = (+32).dp)
                                 .zIndex(2f)
                         ) {
-                            PercentileIndicator(text = "95%")
+                            PercentileIndicator(text = "95%", selected_input = (selected_input == 1))
                         }
                     }
                 }
