@@ -14,17 +14,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.nunosempere.distributioncalculator.ui.theme.SurfaceVariantSelected
 
 @Composable
 fun PercentileIndicator(
     text: String,
     blue: Boolean = false,
+    selected_input: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
             .background(
-                if (blue) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
+                if (blue) MaterialTheme.colorScheme.primaryContainer else (if (selected_input) MaterialTheme.colorScheme.surfaceVariant else SurfaceVariantSelected),
                 RoundedCornerShape(4.dp)
             )
             /*.border(
@@ -37,7 +39,7 @@ fun PercentileIndicator(
         Text(
             text = text,
             fontSize = 16.sp,
-            fontWeight = FontWeight.Normal,
+            fontWeight = if (selected_input) FontWeight.Bold else FontWeight.Normal,
             color = if (blue) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
         )
     }

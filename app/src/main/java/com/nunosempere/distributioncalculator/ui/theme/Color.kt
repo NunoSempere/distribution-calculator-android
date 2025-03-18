@@ -17,3 +17,7 @@ val NumberColor = Color(0xFF4CAF50)     // Green
 val UnitColor = Color(0xFFFF9800)       // Orange
 val CommandColor = Color(0xFF9C27B0)    // Purple
 val EqualColor = Color(0xFFE91E63)      // Pink
+
+// Input field colors
+val SurfaceVariantSelected = Color(0xD3D3D3)  // Darker variant for selected input
+// val SurfaceVariantSelected = Color(0xFFE1E1E1)  // Darker variant for selected input
