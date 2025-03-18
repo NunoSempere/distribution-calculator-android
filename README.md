@@ -10,6 +10,8 @@ The idea is to have a simple app that is able to help people operate with distri
 
 ## Getting started
 
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.nunosempere.distributioncalculator/)
+
 Download [F-Droid](https://f-droid.org/en/), an alternative to Google Play for open source apps, then download the [distribution calculator](https://f-droid.org/en/packages/com.nunosempere.distributioncalculator/) from F-Droid. This has the advantage that F-Droid will take care of updates, scanning, etc. Installing F-Droid also means that you can download *other cool F-Droid apps*.
 
 Alternatively, you can download the apk from Github releases [here](https://github.com/NunoSempere/distribution-calculator-android/releases). Google may ask you to scan it, it doesn't take that long.
