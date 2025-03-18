@@ -1,1 +1,23 @@
 A calculator that can deal with distributions ergonomically, to allow users to easily arrive at fermi estimates that incorporate uncertainty.
+
+Tips:
+
+■ The boxes represent the 90% confidence interval (5% to 95%) of your distributions
+■ Swipe left or right to duplicate an input
+
+Try this example estimating the number of grams lost with a month of exercise lifting:
+
+10 to 30 kg lifted per exercise
+× 0.25 to 0.75 meters lifted per exercise
+× 9.81 gravitational constant, to get to Jules
+× 10 reps per set
+× 3 to 4 sets per exercise
+÷ 15% 35%, a guess on chemical to physical efficiency
+÷ 4, jules to calories
+÷ 6K to 8K, grams lost per cal burnt
+× 7 to 15 exercises in a gym session
+× 2 to 4 times a week
+× 4 weeks a month
+÷ 10% to 30%, wild guess for share of loss that is due to the direct physical exercise 
+  (as opposed to higher burn rate, cost of building muscles, etc.)
+
