@@ -7,7 +7,13 @@
   - [x] Fixed op order
   - [x] Highlight selected operation
   - [x] Some way to duplicate inputs => swipe
-- [ ] Export calculations?
+- [ ] Add some history
+  - Also suggested by a user here: <https://github.com/NunoSempere/distribution-calculator-android/issues/1>. Maybe make the = sign button a bit smaller and add a history option. Maybe add a "more" / "..." options which includes view history.
+  - [ ] View past calculations at all
+  - [ ] Allow users to edit the calculations (harder)
+  - [ ] Allow users to copy & export (and import?) the calculations as well
+  - [ ] Meta level issue: decide what level of complexity I want for this calculator
+    - What permissions do each of these features require? 
 - [ ] Add beta distribution?
 - [ ] Add to F-Droid?
   - <https://f-droid.org/en/docs/Submitting_to_F-Droid_Quick_Start_Guide/>, <https://f-droid.org/en/docs/Inclusion_How-To/#Proposal_by_Metadata_Merge_Request>. Would take a few hours of concentration.
