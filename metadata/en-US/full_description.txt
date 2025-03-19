@@ -9,15 +9,16 @@ Try this example estimating the number of grams lost with a month of exercise li
 
 10 to 30 kg lifted per exercise
 × 0.25 to 0.75 meters lifted per exercise
-× 9.81 gravitational constant, to get to Jules
+× 9.81 gravitational constant, to get to Jules (swipe left at the bottom to duplicate the input)
 × 10 reps per set
 × 3 to 4 sets per exercise
-÷ 15% 35%, a guess on chemical to physical efficiency
+÷ 15% 35%, wild guess on chemical to physical efficiency conversion
 ÷ 4, jules to calories
-÷ 6K to 8K, grams lost per cal burnt
+÷ 6K to 8K, calories burnt to lose one gram of fat
 × 7 to 15 exercises in a gym session
 × 2 to 4 times a week
 × 4 weeks a month
 ÷ 10% to 30%, wild guess for share of loss that is due to the direct physical exercise 
   (as opposed to higher burn rate, cost of building muscles, etc.)
+= ¿ to ? grams lost with the above exercise regime in a month
 
