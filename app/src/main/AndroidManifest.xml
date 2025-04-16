@@ -18,6 +18,8 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"
             android:theme="@style/Theme.DistributionCalculator">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
