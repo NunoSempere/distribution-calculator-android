@@ -11,8 +11,8 @@ android {
         applicationId = "com.nunosempere.distributioncalculator"
         minSdk = 24
         targetSdk = 34
-        versionCode = 206
-        versionName = "0.02.06"
+        versionCode = 207
+        versionName = "0.02.07"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

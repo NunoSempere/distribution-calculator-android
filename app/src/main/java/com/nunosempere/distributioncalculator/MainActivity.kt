@@ -164,11 +164,31 @@ fun Calculator(modifier: Modifier = Modifier) {
     }
 
     fun onNumberClick(number: Int) {
+        if(selected_input == 0){
+            if(on_decimal_input == 0){
+                input_field_low = input_field_low * 10 + number
+            } else {
+                input_field_low = input_field_low + number * 10.0.pow(on_decimal_level)
+                on_decimal_level = on_decimal_level - 1
+            }
+            input_field_high = max(input_field_low, input_field_high)
+        } else {
+            if(on_decimal_input == 0){
+                input_field_high = input_field_high * 10 + number
+            } else {
+                input_field_high = input_field_high + number * 10.0.pow(on_decimal_level)
+                on_decimal_level = on_decimal_level - 1
+            }
+            // input_field_low = min(input_field_low, input_field_high)
+        }
+        /*
         if (on_decimal_input == 0) {
             if (selected_input == 0) {
                 input_field_low = input_field_low * 10 + number
+                input_field_high = max(input_field_low, input_field_high)
             } else {
                 input_field_high = input_field_high * 10 + number
+                input_field_low = min(input_field_low, input_field_high)
             }
         } else {
             if (selected_input == 0) {
@@ -178,6 +198,7 @@ fun Calculator(modifier: Modifier = Modifier) {
             }
             on_decimal_level = on_decimal_level - 1
         }
+        */
     }
 
     fun onOperationClick(op: String) {
@@ -562,11 +583,20 @@ fun Calculator(modifier: Modifier = Modifier) {
                         modifier = Modifier.fillMaxWidth().weight(1f),
                         horizontalArrangement = Arrangement.spacedBy(baseSpacing)
                     ) {
+                        /*
                         ResponsiveCalculatorButton(
                             text = "Clear",
                             onClick = { onClearClick() },
                             modifier = Modifier.weight(1f),
                             buttonType = ButtonType.COMMAND,
+                            fontSize = buttonFontSize
+                        )
+                        */
+                        ResponsiveCalculatorButton(
+                            text = "K",
+                            onClick = { onMultiplierClick("K") },
+                            modifier = Modifier.weight(1f),
+                            buttonType = ButtonType.UNIT,
                             fontSize = buttonFontSize
                         )
                         ResponsiveCalculatorButton(
@@ -582,13 +612,6 @@ fun Calculator(modifier: Modifier = Modifier) {
                         modifier = Modifier.fillMaxWidth().weight(1f),
                         horizontalArrangement = Arrangement.spacedBy(baseSpacing)
                     ) {
-                        ResponsiveCalculatorButton(
-                            text = "K",
-                            onClick = { onMultiplierClick("K") },
-                            modifier = Modifier.weight(1f),
-                            buttonType = ButtonType.UNIT,
-                            fontSize = buttonFontSize
-                        )
                         ResponsiveCalculatorButton(
                             text = "M",
                             onClick = { onMultiplierClick("M") },
@@ -663,7 +686,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                                     if (selected_input == 0) MaterialTheme.colorScheme.surfaceVariant else SurfaceVariantSelected,
                                     RectangleShape
                                 )
-                                .clickable { selected_input = 0; on_decimal_input = 0; on_decimal_level = -1 }
+                                .clickable { selected_input = 0; on_decimal_input = 0; on_decimal_level = -1; input_field_low = 0.0 }
                                 .padding(all = basePadding)
                                 .zIndex(1f),
                             contentAlignment = Alignment.CenterEnd
@@ -696,7 +719,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                                     if (selected_input == 1) MaterialTheme.colorScheme.surfaceVariant else SurfaceVariantSelected,
                                     RectangleShape
                                 )
-                                .clickable { selected_input = 1; on_decimal_input = 0; on_decimal_level = -1 }
+                                .clickable { selected_input = 1; on_decimal_input = 0; on_decimal_level = -1; input_field_high = 0.0 }
                                 .padding(all = basePadding)
                                 .zIndex(1f),
                             contentAlignment = Alignment.CenterEnd

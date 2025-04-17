@@ -104,8 +104,13 @@ tags:
 	git fetch --tags
 
 version-places:
-	@echo - [ ] build.gradle.kts
+	@echo - [ ] app/build.gradle.kts
 	@echo - [ ] AdroidManifest
 	@echo - [ ] git tag
 	@echo - [ ] changelog
 
+edit-version-places:
+	vim ./app/build.gradle.kts
+	vim ./app/src/main/AndroidManifest.xml
+	cd metadata/en-US/changelogs/; lf
+	echo "Missing the git tag"

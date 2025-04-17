@@ -1,0 +1,9 @@
+force portrait mode, duplicate left input automatically; wipe inputs more often
+
+Duplicating left input automatically might save people a 
+couple of clicks when operating with scalars. If instead of 
+clicking "=" the user clicks the right field, the field resets 
+to zero so that the user can type normally.
+
+Additionally, inputs are now wiped to 0.0 when clicking their respective fields,
+rather than having to wait for a "clear" button. This makes the clear button redundant, and so is removed.
