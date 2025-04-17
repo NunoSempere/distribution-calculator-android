@@ -5,13 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -105,10 +105,10 @@ fun Calculator(modifier: Modifier = Modifier) {
     
     val basePadding = (min(screenWidth, screenHeight) * 0.04f).dp
     val baseSpacing = (min(screenWidth, screenHeight) * 0.02f).dp // Reduced spacing between buttons
-    
-    val largeFontSize = max(min(screenWidth, screenHeight) * 0.06f, 20f).sp
-    val buttonFontSize = max(min(screenWidth, screenHeight) * 0.06f, 18f).sp
-    val snackbarFontSize = max(min(screenWidth, screenHeight) * 0.05f, 16f).sp
+
+    val largeFontSize =  max(min(screenWidth * 0.06f, screenHeight * 0.06f), 20f).sp
+    val buttonFontSize = max(min(screenWidth * 0.06f, screenHeight * 0.03f), 18f).sp
+    val snackbarFontSize = (screenHeight * 0.05f).sp
 
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -373,8 +373,8 @@ fun Calculator(modifier: Modifier = Modifier) {
                                 .height(height = outputBoxHeight)
                                 .weight(1f)
                                 .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
-                                .padding(all = basePadding),
-                            contentAlignment = Alignment.CenterEnd
+                                .padding(all = basePadding/2),
+                            contentAlignment = Alignment.BottomEnd
                         ) {
                             Box(
                                 modifier = Modifier
@@ -398,8 +398,8 @@ fun Calculator(modifier: Modifier = Modifier) {
                                 .height(height = outputBoxHeight)
                                 .weight(1f)
                                 .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
-                                .padding(all = basePadding),
-                            contentAlignment = Alignment.CenterEnd
+                                .padding(all = basePadding/2),
+                            contentAlignment = Alignment.BottomEnd
                         ) {
                             Box(
                                 modifier = Modifier
@@ -687,9 +687,9 @@ fun Calculator(modifier: Modifier = Modifier) {
                                     RectangleShape
                                 )
                                 .clickable { selected_input = 0; on_decimal_input = 0; on_decimal_level = -1; input_field_low = 0.0 }
-                                .padding(all = basePadding)
+                                .padding(all = basePadding/2)
                                 .zIndex(1f),
-                            contentAlignment = Alignment.CenterEnd
+                            contentAlignment = Alignment.BottomEnd
                         ) {
                             Text(
                                 text = toPrettyString(input_field_low),
@@ -720,9 +720,9 @@ fun Calculator(modifier: Modifier = Modifier) {
                                     RectangleShape
                                 )
                                 .clickable { selected_input = 1; on_decimal_input = 0; on_decimal_level = -1; input_field_high = 0.0 }
-                                .padding(all = basePadding)
+                                .padding(all = basePadding/2)
                                 .zIndex(1f),
-                            contentAlignment = Alignment.CenterEnd
+                            contentAlignment = Alignment.BottomEnd
                         ) {
                             Text(
                                 text = toPrettyString(input_field_high),
@@ -783,6 +783,7 @@ fun ResponsiveCalculatorButton(
         onClick = onClick,
         modifier = modifier.fillMaxHeight(),
         shape = RectangleShape,
+        contentPadding = PaddingValues(0.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = buttonColor
         )
