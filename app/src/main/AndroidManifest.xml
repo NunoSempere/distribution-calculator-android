@@ -11,8 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DistributionCalculator"
-        android:versionCode="000206"
-        android:versionName="0.02.07"
+        android:versionCode="000208"
+        android:versionName="0.02.08"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"

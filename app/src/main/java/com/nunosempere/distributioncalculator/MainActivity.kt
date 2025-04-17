@@ -218,6 +218,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                 "T" -> input_field_low * 1000.0 * 1000.0 * 1000.0 * 1000.0
                 else -> input_field_low
             }
+            input_field_high = max(input_field_low, input_field_high)
             selected_input = 1
         } else {
             input_field_high = when (multiplier) {
@@ -374,7 +375,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                                 .weight(1f)
                                 .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
                                 .padding(all = basePadding/2),
-                            contentAlignment = Alignment.BottomEnd
+                            contentAlignment = Alignment.CenterEnd
                         ) {
                             Box(
                                 modifier = Modifier
@@ -399,7 +400,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                                 .weight(1f)
                                 .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
                                 .padding(all = basePadding/2),
-                            contentAlignment = Alignment.BottomEnd
+                            contentAlignment = Alignment.CenterEnd
                         ) {
                             Box(
                                 modifier = Modifier
@@ -689,7 +690,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                                 .clickable { selected_input = 0; on_decimal_input = 0; on_decimal_level = -1; input_field_low = 0.0 }
                                 .padding(all = basePadding/2)
                                 .zIndex(1f),
-                            contentAlignment = Alignment.BottomEnd
+                            contentAlignment = Alignment.CenterEnd
                         ) {
                             Text(
                                 text = toPrettyString(input_field_low),
@@ -722,7 +723,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                                 .clickable { selected_input = 1; on_decimal_input = 0; on_decimal_level = -1; input_field_high = 0.0 }
                                 .padding(all = basePadding/2)
                                 .zIndex(1f),
-                            contentAlignment = Alignment.BottomEnd
+                            contentAlignment = Alignment.CenterEnd
                         ) {
                             Text(
                                 text = toPrettyString(input_field_high),
