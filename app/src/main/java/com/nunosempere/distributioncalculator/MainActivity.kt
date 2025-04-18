@@ -31,6 +31,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.SnackbarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -94,9 +95,18 @@ fun Calculator(modifier: Modifier = Modifier) {
 
     var operation by remember { mutableStateOf("×") }
     var selected_input by remember { mutableStateOf(0) }
+    // only false when, since last selecting the current input, the user has already entered at least one digit
+    var selected_input_fresh by remember { mutableStateOf(true) }
+
     var on_decimal_input by remember {mutableStateOf(0)}
     var on_decimal_level by remember {mutableStateOf(-1)}
-    
+
+    LaunchedEffect(selected_input) {
+        selected_input_fresh = true
+        on_decimal_input = 0
+        on_decimal_level = -1
+    }
+
     var isSwipeProcessing by remember { mutableStateOf(false) }
 
     val configuration = LocalConfiguration.current
@@ -165,6 +175,10 @@ fun Calculator(modifier: Modifier = Modifier) {
 
     fun onNumberClick(number: Int) {
         if(selected_input == 0){
+            if (selected_input_fresh) {
+                input_field_low = 0.0
+                selected_input_fresh = false
+            }
             if(on_decimal_input == 0){
                 input_field_low = input_field_low * 10 + number
             } else {
@@ -173,6 +187,10 @@ fun Calculator(modifier: Modifier = Modifier) {
             }
             input_field_high = max(input_field_low, input_field_high)
         } else {
+            if (selected_input_fresh) {
+                input_field_high = 0.0
+                selected_input_fresh = false
+            }
             if(on_decimal_input == 0){
                 input_field_high = input_field_high * 10 + number
             } else {
@@ -218,7 +236,6 @@ fun Calculator(modifier: Modifier = Modifier) {
                 "T" -> input_field_low * 1000.0 * 1000.0 * 1000.0 * 1000.0
                 else -> input_field_low
             }
-            input_field_high = max(input_field_low, input_field_high)
             selected_input = 1
         } else {
             input_field_high = when (multiplier) {
@@ -687,7 +704,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                                     if (selected_input == 0) MaterialTheme.colorScheme.surfaceVariant else SurfaceVariantSelected,
                                     RectangleShape
                                 )
-                                .clickable { selected_input = 0; on_decimal_input = 0; on_decimal_level = -1; input_field_low = 0.0 }
+                                .clickable { selected_input = 0; }
                                 .padding(all = basePadding/2)
                                 .zIndex(1f),
                             contentAlignment = Alignment.CenterEnd
@@ -720,7 +737,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                                     if (selected_input == 1) MaterialTheme.colorScheme.surfaceVariant else SurfaceVariantSelected,
                                     RectangleShape
                                 )
-                                .clickable { selected_input = 1; on_decimal_input = 0; on_decimal_level = -1; input_field_high = 0.0 }
+                                .clickable { selected_input = 1 }
                                 .padding(all = basePadding/2)
                                 .zIndex(1f),
                             contentAlignment = Alignment.CenterEnd
