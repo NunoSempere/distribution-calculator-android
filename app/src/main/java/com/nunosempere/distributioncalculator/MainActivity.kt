@@ -426,10 +426,11 @@ fun Calculator(
                     }
                 }
             }
-        ) { 
+        ) { innerPadding -> 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(innerPadding)
                     .padding(all = basePadding),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
