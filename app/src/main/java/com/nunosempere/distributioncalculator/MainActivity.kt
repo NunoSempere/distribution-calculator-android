@@ -25,12 +25,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.SnackbarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -49,6 +52,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 import com.nunosempere.distributioncalculator.ui.theme.CommandColor
 import com.nunosempere.distributioncalculator.ui.theme.DistributionCalculatorTheme
@@ -72,16 +78,69 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
+
+object Routes {
+    const val CALCULATOR = "calculator"
+    const val TIPS = "tips"
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TipsScreen(onBack: () -> Unit) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Tips") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp)
+        ) {
+            Text("Tips will be added here later")
+        }
+    }
+}
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val navController = rememberNavController()
             DistributionCalculatorTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Calculator(modifier = Modifier.padding(innerPadding))
+                NavHost(
+                    navController = navController,
+                    startDestination = Routes.CALCULATOR
+                ) {
+                    composable(Routes.CALCULATOR) {
+                        Calculator(
+                            onNavigateToTips = {
+                                navController.navigate(Routes.TIPS)
+                            }
+                        )
+                    }
+                    composable(Routes.TIPS) {
+                        TipsScreen(
+                            onBack = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -89,8 +148,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Calculator(modifier: Modifier = Modifier) {
- 
+fun Calculator(
+    modifier: Modifier = Modifier,
+    onNavigateToTips: () -> Unit = {}
+) {
     var output by remember { mutableStateOf<Distribution>(
         Distribution.Lognormal(low = 1.0, high = 1.0)
     )}
@@ -609,6 +670,20 @@ fun Calculator(modifier: Modifier = Modifier) {
                                 onDismissRequest = { showMoreOptionsMenu = false },
                                 modifier = Modifier.background(MaterialTheme.colorScheme.surface)
                             ) {
+                                DropdownMenuItem(
+                                    text = { Text("Tips") },
+                                    onClick = {
+                                        showMoreOptionsMenu = false
+                                        onNavigateToTips()
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            Icons.Default.Info,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.primary
+                                        )
+                                    }
+                                )
                                 DropdownMenuItem(
                                     text = { Text("Option X ") },
                                     onClick = {
