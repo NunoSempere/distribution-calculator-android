@@ -584,15 +584,13 @@ fun Calculator(modifier: Modifier = Modifier) {
                         modifier = Modifier.fillMaxWidth().weight(1f),
                         horizontalArrangement = Arrangement.spacedBy(baseSpacing)
                     ) {
-                        /*
                         ResponsiveCalculatorButton(
-                            text = "Clear",
-                            onClick = { onClearClick() },
+                            text = "...",
+                            onClick = {},
                             modifier = Modifier.weight(1f),
                             buttonType = ButtonType.COMMAND,
                             fontSize = buttonFontSize
                         )
-                        */
                         ResponsiveCalculatorButton(
                             text = "K",
                             onClick = { onMultiplierClick("K") },
