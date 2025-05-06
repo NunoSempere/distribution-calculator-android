@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -98,6 +100,8 @@ fun Calculator(modifier: Modifier = Modifier) {
     var on_decimal_level by remember {mutableStateOf(-1)}
     
     var isSwipeProcessing by remember { mutableStateOf(false) }
+
+    var showMoreOptionsMenu by remember { mutableStateOf(false) }
 
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
@@ -584,13 +588,43 @@ fun Calculator(modifier: Modifier = Modifier) {
                         modifier = Modifier.fillMaxWidth().weight(1f),
                         horizontalArrangement = Arrangement.spacedBy(baseSpacing)
                     ) {
-                        ResponsiveCalculatorButton(
-                            text = "...",
-                            onClick = {},
-                            modifier = Modifier.weight(1f),
-                            buttonType = ButtonType.COMMAND,
-                            fontSize = buttonFontSize
-                        )
+                        Box(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            ResponsiveCalculatorButton(
+                                text = "...",
+                                onClick = { showMoreOptionsMenu = true },
+                                modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                                buttonType = ButtonType.COMMAND,
+                                fontSize = buttonFontSize
+                            )
+                            DropdownMenu(
+                                expanded = showMoreOptionsMenu,
+                                onDismissRequest = { showMoreOptionsMenu = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("Option X") },
+                                    onClick = {
+                                        throwSnackbar("Selected Option X")
+                                        showMoreOptionsMenu = false
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Option Y") },
+                                    onClick = {
+                                        throwSnackbar("Selected Option Y")
+                                        showMoreOptionsMenu = false
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Option Z") },
+                                    onClick = {
+                                        throwSnackbar("Selected Option Z")
+                                        showMoreOptionsMenu = false
+                                    }
+                                )
+                            }
+                        }
                         ResponsiveCalculatorButton(
                             text = "K",
                             onClick = { onMultiplierClick("K") },
