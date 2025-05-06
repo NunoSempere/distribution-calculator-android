@@ -68,6 +68,12 @@ import kotlin.math.max
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Icon
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,7 +118,7 @@ fun Calculator(modifier: Modifier = Modifier) {
 
     val largeFontSize =  max(min(screenWidth * 0.06f, screenHeight * 0.06f), 20f).sp
     val buttonFontSize = max(min(screenWidth * 0.06f, screenHeight * 0.03f), 18f).sp
-    val snackbarFontSize = (screenHeight * 0.05f).sp
+    val snackbarFontSize = (screenHeight * 0.035f).sp  // Reduced from 0.05f to 0.035f
 
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -600,27 +606,49 @@ fun Calculator(modifier: Modifier = Modifier) {
                             )
                             DropdownMenu(
                                 expanded = showMoreOptionsMenu,
-                                onDismissRequest = { showMoreOptionsMenu = false }
+                                onDismissRequest = { showMoreOptionsMenu = false },
+                                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
                             ) {
                                 DropdownMenuItem(
-                                    text = { Text("Option X") },
+                                    text = { Text("Option X ") },
                                     onClick = {
                                         throwSnackbar("Selected Option X")
                                         showMoreOptionsMenu = false
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            Icons.Default.Check,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.primary
+                                        )
                                     }
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("Option Y") },
+                                    text = { Text("Option Y ") },
                                     onClick = {
                                         throwSnackbar("Selected Option Y")
                                         showMoreOptionsMenu = false
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            Icons.Default.Settings,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.primary
+                                        )
                                     }
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("Option Z") },
+                                    text = { Text("Option Z ") },
                                     onClick = {
                                         throwSnackbar("Selected Option Z")
                                         showMoreOptionsMenu = false
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            Icons.Default.Info,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.primary
+                                        )
                                     }
                                 )
                             }
