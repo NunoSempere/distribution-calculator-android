@@ -4,7 +4,7 @@
 
 This is a calculator app for Android that can deal with distributions. It looks as follows:
 
-https://github.com/user-attachments/assets/e8f96941-6732-4585-bee9-9de9aa5ff574
+<img src="https://raw.githubusercontent.com/NunoSempere/distribution-calculator-android/refs/heads/master/metadata/en-US/images/phoneScreenshots/screenshot2.png" width=25%>
 
 The idea is to have a simple app that is able to help people operate with distributions quicker. 
 
