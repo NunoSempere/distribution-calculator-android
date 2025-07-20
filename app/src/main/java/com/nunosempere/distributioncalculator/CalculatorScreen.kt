@@ -596,6 +596,7 @@ fun Calculator(
                                         )
                                     }
                                 )
+                                /*
                                 DropdownMenuItem(
                                     text = { Text("Option Y ") },
                                     onClick = {
@@ -624,6 +625,7 @@ fun Calculator(
                                         )
                                     }
                                 )
+                                */
                             }
                         }
                         ResponsiveCalculatorButton(
