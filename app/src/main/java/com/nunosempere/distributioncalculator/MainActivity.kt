@@ -84,6 +84,7 @@ import androidx.compose.material3.Icon
 object Routes {
     const val CALCULATOR = "calculator"
     const val TIPS = "tips"
+    const val HISTORY = "history"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -111,7 +112,50 @@ fun TipsScreen(onBack: () -> Unit) {
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            Text("Tips will be added here later")
+			Text("■ The boxes represent the 90% confidence interval (5% to 95%) of your distributions")
+			Text("■ Swipe left or right to duplicate an input")
+			Text("")
+			Text("Try this example estimating the amount of fat burnt by going down and coming back up from the Grand canyon:")
+			Text("300 600, meters going down")
+			Text("× 98 105, kgs of weight")
+			Text("× 1.3 2, going down, and then going back up the Canyon, but down is easier")
+			Text("× 9.8 gravitational constant to get to Jules spent")
+			Text("÷ 15% 35%, wild guess on chemical to physical efficiency conversion")
+			Text("÷ 70% 90%, wild guess for share of loss that is due to the direct physical exercise")
+			Text("(as opposed to higher burn rate, cost of building muscles, etc.)")
+			Text("÷ 4, jules to calories")
+			Text("÷ 6K to 8K, calories burnt to lose one gram of fat")
+			Text("= ¿ to ? grams of fat lost")
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HistoryScreen(onBack: () -> Unit, history: String) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("History") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp)
+        ) {
+            Text(history)
         }
     }
 }
@@ -141,6 +185,13 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
+                    composable(Routes.HISTORY) {
+                        TipsScreen(
+                            onBack = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -150,7 +201,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Calculator(
     modifier: Modifier = Modifier,
-    onNavigateToTips: () -> Unit = {}
+    onNavigateToTips: () -> Unit = {},
+    onNavigateToHistory: () -> Unit = {}
 ) {
     var output by remember { mutableStateOf<Distribution>(
         Distribution.Lognormal(low = 1.0, high = 1.0)
@@ -161,13 +213,14 @@ fun Calculator(
     var input_field_low by remember { mutableStateOf(0.0) }
     var input_field_high by remember { mutableStateOf(0.0) }
 
+    var history by remember { mutableStateOf("")}
+
     var operation by remember { mutableStateOf("×") }
     var selected_input by remember { mutableStateOf(0) }
     var on_decimal_input by remember {mutableStateOf(0)}
     var on_decimal_level by remember {mutableStateOf(-1)}
     
     var isSwipeProcessing by remember { mutableStateOf(false) }
-
     var showMoreOptionsMenu by remember { mutableStateOf(false) }
 
     val configuration = LocalConfiguration.current
@@ -183,7 +236,6 @@ fun Calculator(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-
     fun throwSnackbar(error_msg: String) {
             coroutineScope.launch {
                 snackbarHostState.showSnackbar(error_msg)
@@ -199,6 +251,7 @@ fun Calculator(
             "-" -> SubstractDists(output, input)
             else -> Distribution.Err("Unsupported operation type")
         }
+        history = history + "\n" + operation + " " + input_field_low + " " + input_field_high
         return result
     }
 
@@ -686,9 +739,9 @@ fun Calculator(
                                     }
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("Option X ") },
+                                    text = { Text("History") },
                                     onClick = {
-                                        throwSnackbar("Selected Option X")
+                                        onNavigateToHistory(history)
                                         showMoreOptionsMenu = false
                                     },
                                     leadingIcon = {
