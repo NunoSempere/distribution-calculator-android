@@ -41,8 +41,10 @@ fun TipsScreen(onBack: () -> Unit) {
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-			Text("■ The boxes represent the 90% confidence interval (5% to 95%) of your distributions")
-			Text("■ Swipe left or right to duplicate an input")
+			Text("- The boxes represent the 90% confidence interval (5% to 95%) of your distributions")
+			Text("- The app tries to be a bit smart around forcing the 95%-ile value to be larger than")
+			Text("  or equal to the 5%-ile value by duplicating it when it is smaller")
+			Text("- Swipe left or right to duplicate an input")
 			Text("")
 			Text("Try this example estimating the amount of fat burnt by going down and coming back up from the Grand canyon:")
 			Text("300 600, meters going down")

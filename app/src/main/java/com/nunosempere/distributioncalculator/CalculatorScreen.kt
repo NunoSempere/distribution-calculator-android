@@ -70,29 +70,17 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
 
-data class CalculatorState(
-    val output: Distribution = Distribution.Lognormal(low = 1.0, high = 1.0),
-    val outputTagLow: Double = 1.0,
-    val outputTagHigh: Double = 1.0,
-    val inputFieldLow: Double = 0.0,
-    val inputFieldHigh: Double = 0.0,
-    val operation: String = "×",
-    val selectedInput: Int = 0,
-    val onDecimalInput: Int = 0,
-    val onDecimalLevel: Int = -1,
-    val isSwipeProcessing: Boolean = false,
-    val showMoreOptionsMenu: Boolean = false
-)
-
 @Composable
 fun Calculator(
     modifier: Modifier = Modifier,
     history: String = "",
     onHistoryUpdate: (String) -> Unit = {},
+    cs_shared: CalculatorState,
+    onCsSharedUpdate: (CalculatorState) -> Unit = {},
     onNavigateToTips: () -> Unit = {},
     onNavigateToHistory: () -> Unit = {}
 ) {
-    var cs by remember { mutableStateOf(CalculatorState()) }
+    var cs by remember { mutableStateOf(cs_shared) }
 
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
@@ -582,6 +570,7 @@ fun Calculator(
                                     text = { Text("Tips") },
                                     onClick = {
                                         cs = cs.copy(showMoreOptionsMenu = false)
+                                        onCsSharedUpdate(cs)
                                         onNavigateToTips()
                                     },
                                     leadingIcon = {
@@ -595,8 +584,9 @@ fun Calculator(
                                 DropdownMenuItem(
                                     text = { Text("History") },
                                     onClick = {
-                                        onNavigateToHistory()
                                         cs = cs.copy(showMoreOptionsMenu = false)
+                                        onCsSharedUpdate(cs)
+                                        onNavigateToHistory()
                                     },
                                     leadingIcon = {
                                         Icon(
@@ -882,7 +872,18 @@ fun CalculatorPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            Calculator()
+            Calculator(
+                cs_shared = CalculatorState(
+                    inputFieldLow = 100.0,
+                    inputFieldHigh = 200.0,
+                    outputTagLow = 500.0,
+                    outputTagHigh = 1000.0,
+                    operation = "×"
+                ),
+                onCsSharedUpdate = { /* Preview doesn't need real implementation */ }
+            )
         }
     }
 }
+
+
