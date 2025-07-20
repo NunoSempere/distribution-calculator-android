@@ -166,7 +166,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            var appHistory by remember { mutableStateOf("") }
+            var history by remember { mutableStateOf("") }
             DistributionCalculatorTheme {
                 NavHost(
                     navController = navController,
@@ -174,11 +174,12 @@ class MainActivity : ComponentActivity() {
                 ) {
                     composable(Routes.CALCULATOR) {
                         Calculator(
+                            history = history,
+                            onHistoryUpdate = { newHistory -> history = newHistory },
                             onNavigateToTips = {
                                 navController.navigate(Routes.TIPS)
                             },
-                            onNavigateToHistory = { history ->
-                                appHistory = history
+                            onNavigateToHistory = {
                                 navController.navigate(Routes.HISTORY)
                             }
                         )
@@ -195,7 +196,7 @@ class MainActivity : ComponentActivity() {
                             onBack = {
                                 navController.popBackStack()
                             },
-                            history = appHistory
+                            history = history
                         )
                     }
                 }
@@ -207,8 +208,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Calculator(
     modifier: Modifier = Modifier,
+    history: String = "",
+    onHistoryUpdate: (String) -> Unit = {},
     onNavigateToTips: () -> Unit = {},
-    onNavigateToHistory: (String) -> Unit = {}
+    onNavigateToHistory: () -> Unit = {}
 ) {
     var output by remember { mutableStateOf<Distribution>(
         Distribution.Lognormal(low = 1.0, high = 1.0)
@@ -219,7 +222,7 @@ fun Calculator(
     var input_field_low by remember { mutableStateOf(0.0) }
     var input_field_high by remember { mutableStateOf(0.0) }
 
-    var history by remember { mutableStateOf("1 1")}
+
 
     var operation by remember { mutableStateOf("×") }
     var selected_input by remember { mutableStateOf(0) }
@@ -257,7 +260,7 @@ fun Calculator(
             "-" -> SubstractDists(output, input)
             else -> Distribution.Err("Unsupported operation type")
         }
-        history = history + "\n" + operation + " " + input_field_low + " " + input_field_high
+        onHistoryUpdate(history + "\n" + operation + " " + input_field_low + " " + input_field_high)
         return result
     }
 
@@ -747,7 +750,7 @@ fun Calculator(
                                 DropdownMenuItem(
                                     text = { Text("History") },
                                     onClick = {
-                                        onNavigateToHistory(history)
+                                        onNavigateToHistory()
                                         showMoreOptionsMenu = false
                                     },
                                     leadingIcon = {
