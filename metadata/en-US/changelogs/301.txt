@@ -1,0 +1,6 @@
+Add history and tips screens
+
+- Also: change higher field on suffix
+- State is preserved when visiting history
+- Update screenshots
+
