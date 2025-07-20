@@ -70,6 +70,20 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
 
+data class CalculatorState(
+    val output: Distribution = Distribution.Lognormal(low = 1.0, high = 1.0),
+    val outputTagLow: Double = 1.0,
+    val outputTagHigh: Double = 1.0,
+    val inputFieldLow: Double = 0.0,
+    val inputFieldHigh: Double = 0.0,
+    val operation: String = "×",
+    val selectedInput: Int = 0,
+    val onDecimalInput: Int = 0,
+    val onDecimalLevel: Int = -1,
+    val isSwipeProcessing: Boolean = false,
+    val showMoreOptionsMenu: Boolean = false
+)
+
 @Composable
 fun Calculator(
     modifier: Modifier = Modifier,
@@ -78,22 +92,7 @@ fun Calculator(
     onNavigateToTips: () -> Unit = {},
     onNavigateToHistory: () -> Unit = {}
 ) {
-    var output by remember { mutableStateOf<Distribution>(
-        Distribution.Lognormal(low = 1.0, high = 1.0)
-    )}
-    var output_tag_low by remember { mutableStateOf(1.0) }
-    var output_tag_high by remember { mutableStateOf(1.0) }
-
-    var input_field_low by remember { mutableStateOf(0.0) }
-    var input_field_high by remember { mutableStateOf(0.0) }
-
-    var operation by remember { mutableStateOf("×") }
-    var selected_input by remember { mutableStateOf(0) }
-    var on_decimal_input by remember {mutableStateOf(0)}
-    var on_decimal_level by remember {mutableStateOf(-1)}
-    
-    var isSwipeProcessing by remember { mutableStateOf(false) }
-    var showMoreOptionsMenu by remember { mutableStateOf(false) }
+    var cs by remember { mutableStateOf(CalculatorState()) }
 
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
@@ -115,15 +114,15 @@ fun Calculator(
     }
 
     fun calculateResult(): Distribution {
-        val input = Distribution.Lognormal(low = input_field_low, high = input_field_high)
-        val result = when (operation) {
-            "×" -> MultiplyDists(input, output) 
-            "÷" -> DivideDists(output, input)
-            "+" -> SumDists(input, output)
-            "-" -> SubstractDists(output, input)
+        val input = Distribution.Lognormal(low = cs.inputFieldLow, high = cs.inputFieldHigh)
+        val result = when (cs.operation) {
+            "×" -> MultiplyDists(input, cs.output) 
+            "÷" -> DivideDists(cs.output, input)
+            "+" -> SumDists(input, cs.output)
+            "-" -> SubstractDists(cs.output, input)
             else -> Distribution.Err("Unsupported operation type")
         }
-        onHistoryUpdate(history + "\n" + operation + " " + input_field_low + " " + input_field_high)
+        onHistoryUpdate(history + "\n" + cs.operation + " " + cs.inputFieldLow + " " + cs.inputFieldHigh)
         return result
     }
 
@@ -160,64 +159,78 @@ fun Calculator(
     }
 
     fun onNumberClick(number: Int) {
-        if(selected_input == 0){
-            if(on_decimal_input == 0){
-                input_field_low = input_field_low * 10 + number
+        if(cs.selectedInput == 0){
+            if(cs.onDecimalInput == 0){
+                cs = cs.copy(inputFieldLow = cs.inputFieldLow * 10 + number)
             } else {
-                input_field_low = input_field_low + number * 10.0.pow(on_decimal_level)
-                on_decimal_level = on_decimal_level - 1
+                cs = cs.copy(
+                    inputFieldLow = cs.inputFieldLow + number * 10.0.pow(cs.onDecimalLevel),
+                    onDecimalLevel = cs.onDecimalLevel - 1
+                )
             }
-            input_field_high = max(input_field_low, input_field_high)
+            cs = cs.copy(inputFieldHigh = max(cs.inputFieldLow, cs.inputFieldHigh))
         } else {
-            if(on_decimal_input == 0){
-                input_field_high = input_field_high * 10 + number
+            if(cs.onDecimalInput == 0){
+                cs = cs.copy(inputFieldHigh = cs.inputFieldHigh * 10 + number)
             } else {
-                input_field_high = input_field_high + number * 10.0.pow(on_decimal_level)
-                on_decimal_level = on_decimal_level - 1
+                cs = cs.copy(
+                    inputFieldHigh = cs.inputFieldHigh + number * 10.0.pow(cs.onDecimalLevel),
+                    onDecimalLevel = cs.onDecimalLevel - 1
+                )
             }
         }
     }
 
     fun onOperationClick(op: String) {
-        operation = op
-        on_decimal_input = 0
-        on_decimal_level = -1
+        cs = cs.copy(
+            operation = op,
+            onDecimalInput = 0,
+            onDecimalLevel = -1
+        )
     }
 
     fun onMultiplierClick(multiplier: String) {
-        if (selected_input == 0) {
-            input_field_low = when (multiplier) {
-                "%" -> input_field_low * 0.01
-                "K" -> input_field_low * 1000.0
-                "M" -> input_field_low * 1000.0 * 1000.0
-                "B" -> input_field_low * 1000.0 * 1000.0 * 1000.0
-                "T" -> input_field_low * 1000.0 * 1000.0 * 1000.0 * 1000.0
-                else -> input_field_low
+        if (cs.selectedInput == 0) {
+            val newInputFieldLow = when (multiplier) {
+                "%" -> cs.inputFieldLow * 0.01
+                "K" -> cs.inputFieldLow * 1000.0
+                "M" -> cs.inputFieldLow * 1000.0 * 1000.0
+                "B" -> cs.inputFieldLow * 1000.0 * 1000.0 * 1000.0
+                "T" -> cs.inputFieldLow * 1000.0 * 1000.0 * 1000.0 * 1000.0
+                else -> cs.inputFieldLow
             }
-            input_field_high = max(input_field_low, input_field_high)
-            selected_input = 1
+            cs = cs.copy(
+                inputFieldLow = newInputFieldLow,
+                inputFieldHigh = max(newInputFieldLow, cs.inputFieldHigh),
+                selectedInput = 1,
+                onDecimalInput = 0,
+                onDecimalLevel = -1
+            )
         } else {
-            input_field_high = when (multiplier) {
-                "%" -> input_field_high * 0.01
-                "K" -> input_field_high * 1000.0
-                "M" -> input_field_high * 1000.0 * 1000.0
-                "B" -> input_field_high * 1000.0 * 1000.0 * 1000.0
-                "T" -> input_field_high * 1000.0 * 1000.0 * 1000.0 * 1000.0
-                else -> input_field_high
+            val newInputFieldHigh = when (multiplier) {
+                "%" -> cs.inputFieldHigh * 0.01
+                "K" -> cs.inputFieldHigh * 1000.0
+                "M" -> cs.inputFieldHigh * 1000.0 * 1000.0
+                "B" -> cs.inputFieldHigh * 1000.0 * 1000.0 * 1000.0
+                "T" -> cs.inputFieldHigh * 1000.0 * 1000.0 * 1000.0 * 1000.0
+                else -> cs.inputFieldHigh
             }
+            cs = cs.copy(
+                inputFieldHigh = newInputFieldHigh,
+                onDecimalInput = 0,
+                onDecimalLevel = -1
+            )
         }
-        on_decimal_input = 0
-        on_decimal_level = -1
     }
 
     fun onEqualsClick() {
-        if (input_field_low > input_field_high) {
+        if (cs.inputFieldLow > cs.inputFieldHigh) {
             throwSnackbar("Error: first field must be lower than second")
             return
-        } else if (input_field_low == 0.0) {
+        } else if (cs.inputFieldLow == 0.0) {
             throwSnackbar("Error: first field can't be zero yet. If this is important to you, tell Nuño")
             return
-        } else if (input_field_high == 0.0 ){
+        } else if (cs.inputFieldHigh == 0.0 ){
             throwSnackbar("Error: second field can't be zero yet. If this is important to you, tell Nuño")
             return
         }
@@ -225,75 +238,72 @@ fun Calculator(
         val result = calculateResult()
         when(result) {
             is Distribution.Lognormal -> {
-                output_tag_low = result.low
-                output_tag_high = result.high
-
-                output = result
+                cs = cs.copy(
+                    outputTagLow = result.low,
+                    outputTagHigh = result.high,
+                    output = result
+                )
             }
             is Distribution.SamplesArray -> {
                 val xs = (result.samples).copyOf()
                 xs.sort()
-                output_tag_low = xs[5_000]
-                output_tag_high = xs[95_000]
-
-                output = result
+                cs = cs.copy(
+                    outputTagLow = xs[5_000],
+                    outputTagHigh = xs[95_000],
+                    output = result
+                )
             }
             is Distribution.Err -> {
                 throwSnackbar(result.msg)
             }
         }
 
-        input_field_low = 0.0
-        input_field_high = 0.0
-        operation = "×" 
-        selected_input = 0
-        on_decimal_input = 0
-        on_decimal_level = -1
+        cs = cs.copy(
+            inputFieldLow = 0.0,
+            inputFieldHigh = 0.0,
+            operation = "×",
+            selectedInput = 0,
+            onDecimalInput = 0,
+            onDecimalLevel = -1
+        )
     }
 
     fun onRestartClick() {
-        output = Distribution.Lognormal(low = 1.0, high = 1.0)
-        output_tag_low = 1.0
-        output_tag_high = 1.0
-
-        input_field_low = 0.0
-        input_field_high = 0.0
-        operation = "×" 
-        selected_input = 0
-        on_decimal_input = 0
-        on_decimal_level = -1
+        cs = CalculatorState()
     }
 
     fun onClearClick() {
-        if (selected_input == 0) {
-            input_field_low = 0.0
+        if (cs.selectedInput == 0) {
+            cs = cs.copy(inputFieldLow = 0.0)
         } else {
-            input_field_high = 0.0
+            cs = cs.copy(inputFieldHigh = 0.0)
         }
-        on_decimal_input = 0
-        on_decimal_level = -1
+        cs = cs.copy(
+            onDecimalInput = 0,
+            onDecimalLevel = -1
+        )
     }
 
     fun onDecimalClick() {
-        on_decimal_input = 1
+        cs = cs.copy(onDecimalInput = 1)
     }
 
     fun handleSwipe(direction: SwipeDirection) {
-        if (!isSwipeProcessing) {
-            isSwipeProcessing = true
+        if (!cs.isSwipeProcessing) {
+            cs = cs.copy(isSwipeProcessing = true)
             
             when (direction) {
                 SwipeDirection.LEFT -> {
-                    input_field_low = input_field_high
+                    cs = cs.copy(inputFieldLow = cs.inputFieldHigh)
                 }
                 SwipeDirection.RIGHT -> {
-                    input_field_high = input_field_low
+                    cs = cs.copy(inputFieldHigh = cs.inputFieldLow)
                 }
             }
             
             coroutineScope.launch {
                 delay(500) // 500ms debounce time
-                isSwipeProcessing = false
+                cs = cs.copy(isSwipeProcessing = false)
             }
         }
     }
@@ -355,7 +365,7 @@ fun Calculator(
                                 PercentileIndicator(text = "5%", blue = true)
                             }
                             Text(
-                                text = toPrettyString(output_tag_low),
+                                text = toPrettyString(cs.outputTagLow),
                                 fontSize = largeFontSize,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
@@ -380,7 +390,7 @@ fun Calculator(
                                 PercentileIndicator(text = "95%", blue = true)
                             }
                             Text(
-                                text = toPrettyString(output_tag_high),
+                                text = toPrettyString(cs.outputTagHigh),
                                 fontSize = largeFontSize,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
@@ -407,7 +417,7 @@ fun Calculator(
                             modifier = Modifier.fillMaxWidth().weight(1f),
                             buttonType = ButtonType.OPERATION,
                             fontSize = buttonFontSize,
-                            isSelected = operation == "×"
+                            isSelected = cs.operation == "×"
                         )
                     }
 
@@ -421,7 +431,7 @@ fun Calculator(
                             modifier = Modifier.weight(1f),
                             buttonType = ButtonType.OPERATION,
                             fontSize = buttonFontSize,
-                            isSelected = operation == "+"
+                            isSelected = cs.operation == "+"
                         )
                         ResponsiveCalculatorButton(
                             text = "÷",
@@ -429,7 +439,7 @@ fun Calculator(
                             modifier = Modifier.weight(1f),
                             buttonType = ButtonType.OPERATION,
                             fontSize = buttonFontSize,
-                            isSelected = operation == "÷"
+                            isSelected = cs.operation == "÷"
                         )
                         ResponsiveCalculatorButton(
                             text = "-",
@@ -437,7 +447,7 @@ fun Calculator(
                             modifier = Modifier.weight(1f),
                             buttonType = ButtonType.OPERATION,
                             fontSize = buttonFontSize,
-                            isSelected = operation == "-"
+                            isSelected = cs.operation == "-"
                         )
                     }
 
@@ -558,20 +568,20 @@ fun Calculator(
                         ) {
                             ResponsiveCalculatorButton(
                                 text = "...",
-                                onClick = { showMoreOptionsMenu = true },
+                                onClick = { cs = cs.copy(showMoreOptionsMenu = true) },
                                 modifier = Modifier.fillMaxWidth().fillMaxHeight(),
                                 buttonType = ButtonType.COMMAND,
                                 fontSize = buttonFontSize
                             )
                             DropdownMenu(
-                                expanded = showMoreOptionsMenu,
-                                onDismissRequest = { showMoreOptionsMenu = false },
+                                expanded = cs.showMoreOptionsMenu,
+                                onDismissRequest = { cs = cs.copy(showMoreOptionsMenu = false) },
                                 modifier = Modifier.background(MaterialTheme.colorScheme.surface)
                             ) {
                                 DropdownMenuItem(
                                     text = { Text("Tips") },
                                     onClick = {
-                                        showMoreOptionsMenu = false
+                                        cs = cs.copy(showMoreOptionsMenu = false)
                                         onNavigateToTips()
                                     },
                                     leadingIcon = {
@@ -586,7 +596,7 @@ fun Calculator(
                                     text = { Text("History") },
                                     onClick = {
                                         onNavigateToHistory()
-                                        showMoreOptionsMenu = false
+                                        cs = cs.copy(showMoreOptionsMenu = false)
                                     },
                                     leadingIcon = {
                                         Icon(
@@ -600,7 +610,7 @@ fun Calculator(
                                     text = { Text("Option Y ") },
                                     onClick = {
                                         throwSnackbar("Selected Option Y")
-                                        showMoreOptionsMenu = false
+                                        cs = cs.copy(showMoreOptionsMenu = false)
                                     },
                                     leadingIcon = {
                                         Icon(
@@ -614,7 +624,7 @@ fun Calculator(
                                     text = { Text("Option Z ") },
                                     onClick = {
                                         throwSnackbar("Selected Option Z")
-                                        showMoreOptionsMenu = false
+                                        cs = cs.copy(showMoreOptionsMenu = false)
                                     },
                                     leadingIcon = {
                                         Icon(
@@ -692,10 +702,10 @@ fun Calculator(
                         .pointerInput(Unit) {
                             detectHorizontalDragGestures(
                                 onDragEnd = {
-                                    isSwipeProcessing = false
+                                    cs = cs.copy(isSwipeProcessing = false)
                                 },
                                 onDragCancel = {
-                                    isSwipeProcessing = false
+                                    cs = cs.copy(isSwipeProcessing = false)
                                 },
                                 onHorizontalDrag = { _, dragAmount ->
                                     if (abs(dragAmount) > 20) {
@@ -717,18 +727,25 @@ fun Calculator(
                                 .height(height = inputBoxHeight)
                                 .fillMaxWidth()
                                 .background(
-                                    if (selected_input == 0) MaterialTheme.colorScheme.surfaceVariant else SurfaceVariantSelected,
+                                    if (cs.selectedInput == 0) MaterialTheme.colorScheme.surfaceVariant else SurfaceVariantSelected,
                                     RectangleShape
                                 )
-                                .clickable { selected_input = 0; on_decimal_input = 0; on_decimal_level = -1; input_field_low = 0.0 }
+                                .clickable { 
+                                    cs = cs.copy(
+                                        selectedInput = 0,
+                                        onDecimalInput = 0,
+                                        onDecimalLevel = -1,
+                                        inputFieldLow = 0.0
+                                    )
+                                }
                                 .padding(all = basePadding/2)
                                 .zIndex(1f),
                             contentAlignment = Alignment.CenterEnd
                         ) {
                             Text(
-                                text = toPrettyString(input_field_low),
+                                text = toPrettyString(cs.inputFieldLow),
                                 fontSize = largeFontSize,
-                                fontWeight = if (selected_input == 0) FontWeight.Bold else FontWeight.Normal,
+                                fontWeight = if (cs.selectedInput == 0) FontWeight.Bold else FontWeight.Normal,
                                 textAlign = TextAlign.End,
                                 maxLines = 1
                             )
@@ -739,7 +756,7 @@ fun Calculator(
                                 .offset(y = (+12).dp, x = (+32).dp)
                                 .zIndex(2f)
                         ) {
-                            PercentileIndicator(text = "5%", selected_input = (selected_input == 0))
+                            PercentileIndicator(text = "5%", selected_input = (cs.selectedInput == 0))
                         }
                     }
                     Box(
@@ -750,18 +767,25 @@ fun Calculator(
                                 .height(height = inputBoxHeight)
                                 .fillMaxWidth()
                                 .background(
-                                    if (selected_input == 1) MaterialTheme.colorScheme.surfaceVariant else SurfaceVariantSelected,
+                                    if (cs.selectedInput == 1) MaterialTheme.colorScheme.surfaceVariant else SurfaceVariantSelected,
                                     RectangleShape
                                 )
-                                .clickable { selected_input = 1; on_decimal_input = 0; on_decimal_level = -1; input_field_high = 0.0 }
+                                .clickable { 
+                                    cs = cs.copy(
+                                        selectedInput = 1,
+                                        onDecimalInput = 0,
+                                        onDecimalLevel = -1,
+                                        inputFieldHigh = 0.0
+                                    )
+                                }
                                 .padding(all = basePadding/2)
                                 .zIndex(1f),
                             contentAlignment = Alignment.CenterEnd
                         ) {
                             Text(
-                                text = toPrettyString(input_field_high),
+                                text = toPrettyString(cs.inputFieldHigh),
                                 fontSize = largeFontSize,
-                                fontWeight = if (selected_input == 1) FontWeight.Bold else FontWeight.Normal,
+                                fontWeight = if (cs.selectedInput == 1) FontWeight.Bold else FontWeight.Normal,
                                 textAlign = TextAlign.End,
                                 maxLines = 1
                             )
@@ -772,7 +796,7 @@ fun Calculator(
                                 .offset(y = (+12).dp, x = (+32).dp)
                                 .zIndex(2f)
                         ) {
-                            PercentileIndicator(text = "95%", selected_input = (selected_input == 1))
+                            PercentileIndicator(text = "95%", selected_input = (cs.selectedInput == 1))
                         }
                     }
                 }
