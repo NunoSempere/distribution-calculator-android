@@ -418,6 +418,8 @@ fun Calculator(
         selected_input = 0
         on_decimal_input = 0
         on_decimal_level = -1
+        
+        onHistoryUpdate("1 to 1 // initial state")
     }
 
     fun onClearClick() {
