@@ -175,31 +175,11 @@ fun Calculator(
                 input_field_high = input_field_high + number * 10.0.pow(on_decimal_level)
                 on_decimal_level = on_decimal_level - 1
             }
-            // input_field_low = min(input_field_low, input_field_high)
         }
-        /*
-        if (on_decimal_input == 0) {
-            if (selected_input == 0) {
-                input_field_low = input_field_low * 10 + number
-                input_field_high = max(input_field_low, input_field_high)
-            } else {
-                input_field_high = input_field_high * 10 + number
-                input_field_low = min(input_field_low, input_field_high)
-            }
-        } else {
-            if (selected_input == 0) {
-                input_field_low = input_field_low + number * 10.0.pow(on_decimal_level)
-            } else {
-                input_field_high = input_field_high + number * 10.0.pow(on_decimal_level)
-            }
-            on_decimal_level = on_decimal_level - 1
-        }
-        */
     }
 
     fun onOperationClick(op: String) {
         operation = op
-        // throwSnackbar(op)
         on_decimal_input = 0
         on_decimal_level = -1
     }
@@ -242,7 +222,6 @@ fun Calculator(
             return
         }
         
-        // throwSnackbar(operation)
         val result = calculateResult()
         when(result) {
             is Distribution.Lognormal -> {
@@ -306,19 +285,12 @@ fun Calculator(
             when (direction) {
                 SwipeDirection.LEFT -> {
                     input_field_low = input_field_high
-                    // Handle left swipe
-                    // throwSnackbar("Swiped left")
-                    // Additional actions for left swipe can be added here
                 }
                 SwipeDirection.RIGHT -> {
                     input_field_high = input_field_low
-                    // Handle right swipe
-                    // throwSnackbar("Swiped right")
-                    // Additional actions for right swipe can be added here
                 }
             }
             
-            // Reset the processing flag after a delay
             coroutineScope.launch {
                 delay(500) // 500ms debounce time
                 isSwipeProcessing = false
