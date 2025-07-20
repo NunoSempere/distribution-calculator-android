@@ -166,7 +166,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            var history by remember { mutableStateOf("") }
+            var history by remember { mutableStateOf("1 to 1 // initial state") }
             DistributionCalculatorTheme {
                 NavHost(
                     navController = navController,
@@ -222,8 +222,6 @@ fun Calculator(
     var input_field_low by remember { mutableStateOf(0.0) }
     var input_field_high by remember { mutableStateOf(0.0) }
 
-
-
     var operation by remember { mutableStateOf("×") }
     var selected_input by remember { mutableStateOf(0) }
     var on_decimal_input by remember {mutableStateOf(0)}
@@ -260,7 +258,7 @@ fun Calculator(
             "-" -> SubstractDists(output, input)
             else -> Distribution.Err("Unsupported operation type")
         }
-        onHistoryUpdate(history + "\n" + operation + " " + input_field_low + " " + input_field_high)
+        onHistoryUpdate(history + "\n" + operation + " " + input_field_low + " to " + input_field_high)
         return result
     }
 
