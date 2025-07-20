@@ -741,7 +741,7 @@ fun Calculator(
                                 DropdownMenuItem(
                                     text = { Text("History") },
                                     onClick = {
-                                        onNavigateToHistory(history)
+                                        onNavigateToHistory()
                                         showMoreOptionsMenu = false
                                     },
                                     leadingIcon = {
