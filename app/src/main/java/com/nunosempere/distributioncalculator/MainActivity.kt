@@ -166,6 +166,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
+            var appHistory by remember { mutableStateOf("") }
             DistributionCalculatorTheme {
                 NavHost(
                     navController = navController,
@@ -175,6 +176,10 @@ class MainActivity : ComponentActivity() {
                         Calculator(
                             onNavigateToTips = {
                                 navController.navigate(Routes.TIPS)
+                            },
+                            onNavigateToHistory = { history ->
+                                appHistory = history
+                                navController.navigate(Routes.HISTORY)
                             }
                         )
                     }
@@ -186,10 +191,11 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(Routes.HISTORY) {
-                        TipsScreen(
+                        HistoryScreen(
                             onBack = {
                                 navController.popBackStack()
-                            }
+                            },
+                            history = appHistory
                         )
                     }
                 }
@@ -202,7 +208,7 @@ class MainActivity : ComponentActivity() {
 fun Calculator(
     modifier: Modifier = Modifier,
     onNavigateToTips: () -> Unit = {},
-    onNavigateToHistory: () -> Unit = {}
+    onNavigateToHistory: (String) -> Unit = {}
 ) {
     var output by remember { mutableStateOf<Distribution>(
         Distribution.Lognormal(low = 1.0, high = 1.0)
@@ -213,7 +219,7 @@ fun Calculator(
     var input_field_low by remember { mutableStateOf(0.0) }
     var input_field_high by remember { mutableStateOf(0.0) }
 
-    var history by remember { mutableStateOf("")}
+    var history by remember { mutableStateOf("1 1")}
 
     var operation by remember { mutableStateOf("×") }
     var selected_input by remember { mutableStateOf(0) }
@@ -741,7 +747,7 @@ fun Calculator(
                                 DropdownMenuItem(
                                     text = { Text("History") },
                                     onClick = {
-                                        onNavigateToHistory()
+                                        onNavigateToHistory(history)
                                         showMoreOptionsMenu = false
                                     },
                                     leadingIcon = {
