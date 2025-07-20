@@ -57,6 +57,9 @@ fun TipsScreen(onBack: () -> Unit) {
 			Text("÷ 4, jules to calories")
 			Text("÷ 6K to 8K, calories burnt to lose one gram of fat")
 			Text("= ¿ to ? grams of fat lost")
+			Text("")
+			Text("You can make suggestions at <https://github.com/NunoSempere/distribution-calculator-android>")
+			Text("You can also find this link in the F-Droid page for this app")
         }
     }
 }
